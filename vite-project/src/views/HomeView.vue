@@ -1,9 +1,16 @@
+<template>
+  <div>
+
+  </div>
+</template>
+
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+  import { createClient } from '@supabase/supabase-js'
+
+export const supabase = createClient('https://<project>.supabase.co', '<your-anon-key>')
+
 </script>
 
-<template>
-  <main>
-    <TheWelcome />
-  </main>
-</template>
+<style lang="scss" scoped>
+
+</style>
