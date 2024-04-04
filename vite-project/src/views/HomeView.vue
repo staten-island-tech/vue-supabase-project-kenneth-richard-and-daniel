@@ -1,6 +1,6 @@
 <template>
   <div>
-    <li v-for=""></li>
+    <h1>a</h1>
   </div>
 </template>
 
@@ -9,12 +9,13 @@
 import { ref, onMounted } from 'vue';
 import { supabase } from '@/lib/supabaseClient';
 
-const users: any = ref([]);
-const loaded: object = ref(false);
+const users = ref<any> ();
+const loaded = ref<boolean> (false);
 
-async function getUsers () {
-  const { data } = await supabase.from('users').select();
-  users.value = data;
+async function getUsers (): Promise<void> {
+  const userTable = await supabase.from('users').select();
+  users.value = userTable.data;
+  console.log(userTable)
 }
 
 onMounted(() => {
