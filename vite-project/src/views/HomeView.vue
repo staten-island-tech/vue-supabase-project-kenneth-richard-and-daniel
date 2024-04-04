@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>a</h1>
+    <LoginAuth/>
   </div>
 </template>
 
@@ -8,6 +9,7 @@
 
 import { ref, onMounted } from 'vue';
 import { supabase } from '@/lib/supabaseClient';
+import LoginAuth from '@/components/LoginAuth.vue';
 
 const users = ref<any> ();
 const loaded = ref<boolean> (false);
