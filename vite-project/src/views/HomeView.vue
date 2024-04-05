@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>a</h1>
+    <h1>It might not seem like much, but this is a work in progress loot box game.</h1>
     <LoginAuth/>
   </div>
 </template>
