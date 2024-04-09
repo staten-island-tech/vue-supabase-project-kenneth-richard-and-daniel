@@ -1,7 +1,8 @@
 <template>
   <div>
     <h1>a</h1>
-    <LootboxMenu />
+    <LootboxChances v-if="weapons" :Skins="weapons" />
+    <LootboxMenu v-if="weapons" :Skins="weapons" />
     <!--<LoginAuth v-else/>-->
   </div>
 </template>
@@ -9,13 +10,25 @@
 <script setup lang="ts">
 
 import { ref, onMounted } from 'vue';
-import { supabase } from '@/lib/supabaseClient';
+// import { supabase } from '@/lib/supabaseClient';
 import LoginAuth from '@/components/LoginAuth.vue';
 import LootboxMenu from '@/components/LootboxMenu.vue';
+import { getSkins } from '@/stores/lootboxes';
+import LootboxChances from '@/components/LootboxChances.vue';
 
 const users = ref<any> ();
 const loaded = ref<boolean> (false);
 const session = ref<any> ();
+
+const weapons = ref<any> ();
+  
+onMounted(async () => {
+    try {
+        weapons.value = await getSkins();
+    } catch (error) {
+        console.warn(error);
+    }
+});
 
 /*async function getUsers (): Promise<void> {
   const userTable = await supabase.from('users').select();

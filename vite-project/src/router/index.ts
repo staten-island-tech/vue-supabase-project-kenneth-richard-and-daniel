@@ -9,7 +9,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView
-    },
+    }, {
+      path: '/all-skins',
+      name: 'all-skins',
+      component: () => import('../views/SkinView.vue')
+    }
   ]
 })
 
