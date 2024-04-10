@@ -1,16 +1,23 @@
 <template>
-  <button @click="roll">Click</button>
-  <div v-for="skin in wheel" style="display: flex; gap: 5vw">
-    <img :src="skin.displayIcon" alt="" style="height: 25%; width: 25%;"
-    :class="{ common: skin.rarity == 'Common', rare: skin.rarity == 'Rare', epic: skin.rarity == 'Epic', legendary : skin.rarity == 'Legendary', godly: skin.rarity == 'Godly' }">
-    <h3>{{ skin.displayName }}</h3>
-  </div>
+  <Transition name="unlock">
+    <div v-if="finished" class="unlockBackground">
+      <div class="unlockMenu"  :class="{ common: outcome.rarity == 'Common', rare: outcome.rarity == 'Rare', epic: outcome.rarity == 'Epic', legendary : outcome.rarity == 'Legendary', godly: outcome.rarity == 'Godly' }">
+        <h1>You unlocked:</h1>
+        <img :src="outcome.displayIcon" :alt="outcome.displayName" class="unlockImg">
+        <h2>{{ outcome.displayName }}</h2>
+        <button @click="finished = false">Close</button>
+      </div>
+    </div>
+  </Transition>
 
-  <div v-if="finished" style="background-color: black; color: white; position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
-    <h3>you got</h3>
-    <img :src="outcome.displayIcon" alt="" style="height: 25%; width: 25%;">
-    <h1>{{ outcome.displayName }}</h1>
-    <button @click="finished = false">Close</button>
+  <div class="lootboxMenu">
+    <div class="boxDiv">
+      <div v-for="skin in wheel" class="loot" :class="{ common: skin.rarity == 'Common', rare: skin.rarity == 'Rare', epic: skin.rarity == 'Epic', legendary : skin.rarity == 'Legendary', godly: skin.rarity == 'Godly' }">
+        <img :src="skin.displayIcon" :alt="skin.displayName">
+      </div>
+    </div>
+    <img src="/upArrow.svg" alt="This skin will be drawn." class="arrow">
+    <button @click="roll">Open Lootbox</button>
   </div>
 </template>
 
@@ -20,7 +27,7 @@
 import { ref, onMounted, toRefs } from 'vue';
 
 type WeaponSkin = {
-    displayIcon: string | null;
+    displayIcon: string | undefined;
     displayName: string;
     levelsCount: number;
     wallpaper: string | null;
@@ -143,6 +150,41 @@ onMounted(() => {
 
 <style scoped>
 
+.lootboxMenu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 115em;
+}
+
+.boxDiv {
+  width: 90em;
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.25);
+  padding: 1em;
+  border-radius: 2em;
+  align-items: center;
+  height: 15em;
+}
+
+.loot {
+  width: 20%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loot img {
+  max-width: 95%;
+  max-height: 95%;
+}
+
+.arrow {
+  width: 7.5em;
+  height: 7.5em;
+}
+
 .common {
   background-color: #60d149;
 }
@@ -157,6 +199,69 @@ onMounted(() => {
 }
 .godly {
   background: linear-gradient(to bottom right, #ff0000, #ffbb00, #bbff00, #00ff4c, #00c3ff, #ff00ff);
+}
+
+.unlockBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  z-index: 99999999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.unlockMenu {
+  min-width: 75em;
+  max-width: 125em;
+  padding: 20px;
+  border-radius: 3vh;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  max-height: 80%;
+  min-height: 30%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: black;
+}
+
+.unlockImg {
+  max-width: 40%;
+  max-height: 40%;
+}
+
+.unlock-enter-active, .unlock-leave-active {
+  transition: all 0.5s ease-in-out;
+}
+
+.unlock-leave-active {
+  transition-delay: 0.15s;
+}
+
+.unlock-enter-from,
+.unlock-leave-to {
+  opacity: 0;
+}
+
+.unlock-enter-active .unlockMenu,
+.unlock-leave-active .unlockMenu { 
+  transition: all 0.25s ease-in-out;
+}
+
+.unlock-enter-active .unlockMenu {
+  transition-delay: 0.15s;
+}
+
+.unlock-enter-from .unlockMenu,
+.unlock-leave-to .unlockMenu {
+  transform: scale(1.05);
+  opacity: 0.001;
 }
 
 </style>

@@ -13,6 +13,10 @@ const router = createRouter({
       path: '/all-skins',
       name: 'all-skins',
       component: () => import('../views/SkinView.vue')
+    }, {
+      path: '/test',
+      name: 'test',
+      component: () => import('../views/TestView.vue')
     }
   ]
 })

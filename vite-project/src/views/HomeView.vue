@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>a</h1>
     <LootboxChances v-if="weapons" :Skins="weapons" />
     <LootboxMenu v-if="weapons" :Skins="weapons" />
     <!--<LoginAuth v-else/>-->
@@ -9,8 +8,8 @@
 
 <script setup lang="ts">
 
-import { ref, onMounted } from 'vue';
-// import { supabase } from '@/lib/supabaseClient';
+import { ref, onMounted, toRefs } from 'vue';
+import { supabase } from '@/lib/supabaseClient';
 import LoginAuth from '@/components/LoginAuth.vue';
 import LootboxMenu from '@/components/LootboxMenu.vue';
 import { getSkins } from '@/stores/lootboxes';
