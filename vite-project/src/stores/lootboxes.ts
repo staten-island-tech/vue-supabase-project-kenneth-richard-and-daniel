@@ -93,7 +93,7 @@ function checkSkin (name: string, img: string): boolean {
         return false;
     } else if (name.includes("Random")) {
         return false;
-    } else if (name == "Melee" || name == "Luxe Knife" || name == "Sovereign Marshal" || name == "Sovereign Guardian") {
+    } else if (name == "Melee" || name == "Luxe Knife" || name == "Sovereign Marshal" || name == "Sovereign Guardian" || name == "Prime Guardian") {
         return false;
     }
 
