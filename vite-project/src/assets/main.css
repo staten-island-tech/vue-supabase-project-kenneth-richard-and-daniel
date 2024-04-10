@@ -59,6 +59,13 @@
   --h4: 1.5em;
   --p: 1em;
   --standard: 0.75em;
+
+  --common: #60d149;
+  --rare: #52b1ff;
+  --epic: #c174ff;
+  --legendary: #f3ff52;
+  --godly: linear-gradient(to bottom right, #ff0000, #ffbb00, #bbff00, #00ff4c, #00c3ff, #ff00ff);
+  --godlyText: linear-gradient(to right, #ff0000, #ffbb00, #bbff00, #00ff4c, #00c3ff, #ff00ff);
 }
 
 #app {
@@ -73,6 +80,7 @@ body {
   font-family: 'Kanit', sans-serif;
   height: 100%;
   font-size: var(--standard);
+  background: linear-gradient(to bottom right, var(--gradientGray1), var(--gradientGray2), var(--gradientGray3), var(--gradientGray4));
 }
 
 h1 {font-size: var(--h1)}

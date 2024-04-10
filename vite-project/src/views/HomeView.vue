@@ -1,6 +1,6 @@
 <template>
   <div>
-    <LootboxChances v-if="weapons" :Skins="weapons" />
+<!--<LootboxChances v-if="weapons" :Skins="weapons" />-->
     <LootboxMenu v-if="weapons" :Skins="weapons" />
     <!--<LoginAuth v-else/>-->
   </div>
@@ -49,5 +49,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
+div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 </style>

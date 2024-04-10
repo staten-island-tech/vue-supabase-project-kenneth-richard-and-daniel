@@ -1,10 +1,18 @@
 <template>
-    <div>
-        <h3>Common: {{ common }}%</h3>
-        <h3>Rare: {{ rare }}%</h3>
-        <h3>Epic: {{ epic }}%</h3>
-        <h3>Legendary: {{ legendary }}%</h3>
-        <h3>Godly: {{ godly }}%</h3>
+    <div class="rarity">
+        <h3 class="common" :class="{ gray: props.Current.rarity != 'Common' }">Common: {{ common }}%</h3>
+    </div>
+    <div class="rarity">
+        <h3 class="rare" :class="{ gray: props.Current.rarity != 'Rare' }">Rare: {{ rare }}%</h3>
+    </div>
+    <div class="rarity">
+        <h3 class="epic" :class="{ gray: props.Current.rarity != 'Epic' }">Epic: {{ epic }}%</h3>
+    </div>
+    <div class="rarity">
+        <h3 class="legendary" :class="{ gray: props.Current.rarity != 'Legendary' }">Legendary: {{ legendary }}%</h3>
+    </div>
+    <div class="rarity">
+        <h3 class="godly" :class="{ gray: props.Current.rarity != 'Godly' }">Godly: {{ godly }}%</h3>
     </div>
 </template>
 
@@ -22,7 +30,10 @@ type WeaponSkin = {
 
 const props = defineProps({
     Skins: Array,
+    Current: Object,
 });
+
+console.log(props.Current)
 
 const allSkins: any = props.Skins?.map((item: any) => item.skins);
 const combinedSkins: WeaponSkin[] = [].concat(...allSkins);
@@ -36,5 +47,33 @@ const godly = ref<string> (((combinedSkins.filter((item) => item.rarity == "Godl
 </script>
 
 <style scoped>
+
+.rarity h3 {
+    font-size: var(--h3);
+    margin: 0;
+}
+
+.common {
+    color: var(--common);
+}
+.rare {
+    color: var(--rare);
+}
+.epic {
+    color: var(--epic);
+}
+.legendary {
+    color: var(--legendary);
+}
+.godly {
+    color: transparent;
+    background-image: var(--godlyText);
+    background-clip: text;
+    width: fit-content;
+}
+
+.gray {
+    filter: grayscale(1);
+}
 
 </style>
