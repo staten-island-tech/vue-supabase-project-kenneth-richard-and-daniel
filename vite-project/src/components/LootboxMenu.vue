@@ -107,6 +107,10 @@ for (let i = 0; i < 5; i++) {
 }
 
 async function roll (): Promise<void> {
+  if (rolling.value == true) {
+    return;
+  }
+
   rollNumber = 0;
   const roll: number = getRandomIntInclusive(150, 160);
   rolling.value = true;
