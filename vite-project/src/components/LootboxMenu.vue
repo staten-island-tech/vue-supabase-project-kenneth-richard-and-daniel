@@ -114,6 +114,7 @@ async function roll (): Promise<void> {
   rollNumber = 0;
   const roll: number = getRandomIntInclusive(150, 160);
   rolling.value = true;
+
   while (rollNumber <= roll) {
     const randomSkin: WeaponSkin = combinedSkins[getRandomIntInclusive(0, combinedSkins.length - 1)];
     wheel.value.push(randomSkin);
@@ -137,7 +138,7 @@ async function roll (): Promise<void> {
     } else if (rollNumber < roll - 1) {
       await delay(650);
 
-    } else if (rollNumber <= roll -1) {
+    } else if (rollNumber <= roll - 1) {
       await delay(1000);
     }
 
@@ -146,8 +147,10 @@ async function roll (): Promise<void> {
 
   outcome.value = wheel.value[2];
   await delay(1750);
+
   finished.value = true;
   rolling.value = false;
+
   if (pitied.value == true) {
     pitied.value = false;
   }
