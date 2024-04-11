@@ -1,9 +1,9 @@
 <template>
     <div v-for="weapon in weapons">
       <div v-for="skin in weapon.skins">
+        <h3>{{ skin.displayName }}</h3>
         <img :src="skin.displayIcon" alt=""
         :class="{ common: skin.rarity == 'Common', rare: skin.rarity == 'Rare', epic: skin.rarity == 'Epic', legendary : skin.rarity == 'Legendary', godly: skin.rarity == 'Godly' }">
-        <h3>{{ skin.displayName }}</h3>
       </div>
     </div>
   </template>
@@ -29,19 +29,19 @@ onMounted(async () => {
 <style scoped>
 
 .common {
-  background-color: #66ff52;
+  background-color: var(--common);
 }
 .rare {
-  background-color: #52b1ff;
+  background-color: var(--rare);
 }
 .epic {
-  background-color: #cf67ff;
+  background-color: var(--epic);
 }
 .legendary {
-  background-color: #f3ff52;
+  background-color: var(--legendary);
 }
 .godly {
-  background-color: #ff389c;
+  background: var(--godly);
 }
   
 </style>

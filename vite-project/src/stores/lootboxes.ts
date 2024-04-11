@@ -81,6 +81,8 @@ type NewWeapon = {
 }
 
 type WeaponSkin = {
+    defaultName: string;
+    category: string | null;
     displayIcon: string | null;
     displayName: string;
     levelsCount: number;
@@ -106,6 +108,10 @@ function checkSkin (name: string, img: string): boolean {
 function getRarity (weapon: ApiWeapon, skin: ApiSkin): string {
     let rarity: string = "";
     let levelsCount: number = skin.levels.length;
+
+    if (skin.displayName == "VCT x SEN Classic") {
+        return "Godly";
+    }
 
     if (!weapon.shopData) {
         // means its a knife
@@ -157,6 +163,8 @@ async function getSkins () {
                 let skinRarity: string = getRarity(weapon, skin);
 
                 const skinObj: WeaponSkin = {
+                    defaultName: weapon.displayName,
+                    category: weapon.shopData ? weapon.shopData.category : null,
                     displayIcon: skin.displayIcon,
                     displayName: skin.displayName,
                     levelsCount: skin.levels.length,

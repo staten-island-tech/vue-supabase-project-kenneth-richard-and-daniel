@@ -3,12 +3,31 @@
     <div v-if="finished" class="unlockBackground">
       <div class="unlockMenu"  :class="{ common: outcome.rarity == 'Common', rare: outcome.rarity == 'Rare', epic: outcome.rarity == 'Epic', legendary : outcome.rarity == 'Legendary', godly: outcome.rarity == 'Godly' }">
         <h1>You unlocked:</h1>
-        <img :src="outcome.displayIcon" :alt="outcome.displayName" class="unlockImg">
-        <h2>{{ outcome.displayName }}</h2>
-        <button @click="finished = false">Close</button>
+        <img :src="outcome.displayIcon" :alt="outcome.displayName"
+        :class="{ unlockImg: outcome.category == 'Pistols' || outcome.category == null, unlockImgBig: outcome.category != 'Pistols' && outcome.category != null }">
+        <h2 style="margin-bottom: 0">{{ outcome.displayName }}</h2>
+        <h3 style="margin-top: 0">({{ outcome.defaultName }} - {{ outcome.rarity }})</h3>
+        <div class="buttonArray">
+          <button class="finishedButton nextButton" @click="finished = false">
+            <img src="/loop.svg" alt="Click to open another lootbox">
+            <h3>Roll Again</h3>
+          </button>
+          <RouterLink to="/inventory" class="finishedButton inventoryButton">
+            <img src="/chest.svg" alt="Click to view your inventory">
+            <h3>Inventory</h3>
+          </RouterLink>
+        </div>
       </div>
     </div>
   </Transition>
+
+  <div class="pityBar">
+    <PityBar @response="pity"/>
+  </div>
+
+  <div class="chanceMenu">
+    <LootboxChances :Skins="filtered" :Current="wheel[2]" :Wheel="wheel"/>
+  </div>
 
   <div class="lootboxMenu">
     <div class="boxDiv">
@@ -24,11 +43,6 @@
     </button>
   </div>
 
-  <Transition name="chances">
-    <div class="chanceMenu" v-if="rolling">
-      <LootboxChances :Skins="props.Skins" :Current="wheel[2]"/>
-    </div>
-  </Transition>
 </template>
 
 <script setup lang="ts">
@@ -36,8 +50,19 @@
 // import { supabase } from '@/lib/supabaseClient';
 import { ref, onMounted, toRefs } from 'vue';
 import LootboxChances from '@/components/LootboxChances.vue';
+import PityBar from './PityBar.vue';
+
+type NewWeapon = {
+    displayIcon: string;
+    displayName: string;
+    category: string | null;
+    cost: number | null;
+    skins: WeaponSkin[];
+}
 
 type WeaponSkin = {
+    defaultName: string;
+    category: string | null;
     displayIcon: string | undefined;
     displayName: string;
     levelsCount: number;
@@ -45,8 +70,14 @@ type WeaponSkin = {
     rarity: string;
 }
 
+type Props = {
+  Skins: NewWeapon[];
+}
+
 const wheel = ref<WeaponSkin[]> ([]);
 const outcome = ref<WeaponSkin> ({
+  defaultName: "",
+  category: null,
   displayIcon: "",
   displayName: "",
   levelsCount: 0,
@@ -55,32 +86,31 @@ const outcome = ref<WeaponSkin> ({
 });
 const finished = ref<boolean> (false);
 const rolling = ref<boolean> (false);
+const filtered = ref<WeaponSkin[]> ([]);
+const pitied = ref<boolean> (false);
+
 let rollNumber: number = 0;
+const props = defineProps<Props>();
 
-const props = defineProps({
-  Skins: Array,
-});
+const allSkins: WeaponSkin[][] = props.Skins.map((item: NewWeapon) => item.skins);
+const emptyArray: WeaponSkin[] = [];
+const combinedSkins: WeaponSkin[] = pitied.value == false ? emptyArray.concat(...allSkins) : emptyArray.concat(...allSkins).filter((skin) => skin.rarity != "Common");
+filtered.value = combinedSkins;
 
-// console.log(props.Skins)
-
-const allSkins: any = props.Skins?.map((item: any) => item.skins);
-// console.log(allSkins)
-const combinedSkins: WeaponSkin[] = [].concat(...allSkins);
-
-// console.log(combinedSkins)
+function pity (): void {
+  pitied.value = true;
+}
 
 for (let i = 0; i < 5; i++) {
   const randomSkin: WeaponSkin = combinedSkins[getRandomIntInclusive(0, combinedSkins.length - 1)];
   wheel.value.push(randomSkin);
 }
 
-// console.log(wheel.value)
-
-async function roll () {
+async function roll (): Promise<void> {
   rollNumber = 0;
+  const roll: number = getRandomIntInclusive(150, 160);
   rolling.value = true;
-  while (rollNumber <= 150) {
-    // console.log(rollNumber);
+  while (rollNumber <= roll) {
     const randomSkin: WeaponSkin = combinedSkins[getRandomIntInclusive(0, combinedSkins.length - 1)];
     wheel.value.push(randomSkin);
     wheel.value.splice(0, 1);
@@ -97,23 +127,26 @@ async function roll () {
     } else if (rollNumber < 140) {
       await delay(200);
 
-    } else if (rollNumber < 146) {
-      await delay(350);
+    } else if (rollNumber < 140 + (2 * Math.round(((roll - 1) - 140)/3))) {
+      await delay(300);
 
-    } else if (rollNumber < 149) {
-      await delay(750);
+    } else if (rollNumber < roll - 1) {
+      await delay(650);
 
-    } else if (rollNumber <= 149) {
-      await delay(1250);
+    } else if (rollNumber <= roll -1) {
+      await delay(1000);
     }
 
     rollNumber++;
   }
 
   outcome.value = wheel.value[2];
-  await delay(2000);
+  await delay(1750);
   finished.value = true;
   rolling.value = false;
+  if (pitied.value == true) {
+    pitied.value = false;
+  }
 }
 
 function delay (ms: number) {
@@ -172,7 +205,7 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   width: 115em;
-  margin-top: 7.5em;
+  transition: all 0.5s;
 }
 
 .boxDiv {
@@ -214,6 +247,7 @@ onMounted(() => {
   transition: all 0.5s;
   width: 18em;
   overflow: hidden;
+  margin-top: 5em;
 }
 .openCrate .unlockText {
   position: absolute;
@@ -287,7 +321,10 @@ onMounted(() => {
 
 .unlockImg {
   max-width: 40%;
-  max-height: 40%;
+}
+.unlockImgBig {
+  max-width: 90%;
+  min-width: 70%;
 }
 
 .unlock-enter-active, .unlock-leave-active {
@@ -320,37 +357,62 @@ onMounted(() => {
 
 .chanceMenu {
   display: flex;
-  flex-direction: column;
   background-color: rgba(0, 0, 0, 0.5);
   width: fit-content;
+  border-radius: 3em;
+  padding: 1em;
+  gap: 1.5em;
+  transition: all 0.5s;
+  margin-top: 7.5em;
+  margin-bottom: 2.5em;
 }
 
-.chances-enter-active, .chances-leave-active {
-  transition: all 0.5s ease-in-out;
+.buttonArray {
+  display: flex;
+  justify-content: space-evenly;
+  width: 75%;
+  margin-top: 1em;
 }
 
-.chances-leave-active {
-  transition-delay: 0.15s;
+.finishedButton {
+  width: 50%;
+  font-size: var(--p);
+  height: 6.5em;
+  border-radius: 1.5em;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10%;
+  filter: grayscale(0.33);
+  border: solid;
+  border-width: 0.1em;
+  text-decoration: none;
 }
 
-.chances-enter-from,
-.chances-leave-to {
-  opacity: 0;
+.nextButton {background-color: var(--deepYellow)}
+.inventoryButton {background-color: #50dcff}
+
+.finishedButton h3 {
+  margin: 0;
+  text-align: center;
+  width: fit-content;
+  height: fit-content;
+  font-size: var(--h3);
 }
 
-.chances-enter-active .chanceMenu,
-.chances-leave-active .chanceMenu { 
-  transition: all 0.25s ease-in-out;
+.finishedButton img {
+  background-color: transparent;
 }
 
-.chances-enter-active .chanceMenu {
-  transition-delay: 0.15s;
+.finishedButton > * {
+  width: 5vh;
+  height: 5vh;
+  margin-right: 0;
 }
 
-.chances-enter-from .chanceMenu,
-.chances-leave-to .chanceMenu {
-  transform: translateY(30px);
-  opacity: 0.001;
+.finishedButton:hover {
+  filter: grayscale(0);
 }
 
 </style>
