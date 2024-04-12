@@ -1,8 +1,8 @@
 <template>
   <div>
-<!--<LootboxChances v-if="weapons" :Skins="weapons" />-->
-    <LootboxMenu v-if="weapons" :Skins="weapons" />
-    <!--<LoginAuth v-else/>-->
+    <!--<LootboxChances v-if="weapons" :Skins="weapons" />-->
+    <LootboxMenu v-if="weapons && session" :Skins="weapons" />
+    <LoginAuth v-else/>
   </div>
 </template>
 
