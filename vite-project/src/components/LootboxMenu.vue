@@ -119,7 +119,7 @@ async function roll (): Promise<void> {
     wheel.value.push(randomSkin);
     wheel.value.splice(0, 1);
 
-    if (rollNumber < 110) {
+    /*if (rollNumber < 110) {
       await delay(25);
 
     } else if (rollNumber < 120) {
@@ -139,13 +139,13 @@ async function roll (): Promise<void> {
 
     } else if (rollNumber <= roll -1) {
       await delay(1000);
-    }
+    }*/
 
     rollNumber++;
   }
 
   outcome.value = wheel.value[2];
-  await delay(1750);
+  //await delay(1750);
   finished.value = true;
   rolling.value = false;
   if (pitied.value == true) {
