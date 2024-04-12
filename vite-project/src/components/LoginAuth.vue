@@ -8,7 +8,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { supabase } from '@/lib/supabaseClient';
+// @ts-ignore
+import { supabase } from '@/lib/supabaseClient.js';
 
 const loading = ref<boolean> (false);
 const password = ref<string> ("");
@@ -45,7 +46,7 @@ async function handleLogin() {
       .insert({ uuid: userData.data.user.id, email: email.value })
     console.log(userData);
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Sign-up error:', error.message);
   }
 }

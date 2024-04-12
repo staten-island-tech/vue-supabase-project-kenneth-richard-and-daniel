@@ -9,7 +9,7 @@
 <script setup lang="ts">
 
 import { ref, onMounted, toRefs } from 'vue';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabaseClient.js';
 import LoginAuth from '@/components/LoginAuth.vue';
 import LootboxMenu from '@/components/LootboxMenu.vue';
 import { getSkins } from '@/stores/lootboxes';
