@@ -17,7 +17,7 @@ const email = ref<string> ("");
 const handleLogin = async () => {
   try {
     loading.value = true;
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signUp({
       email: email.value,
       password: password.value
     });
