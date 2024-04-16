@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 // @ts-ignore
-import { supabase } from '@/lib/supabaseClient.js';
+import { supabase } from '@/lib/supabaseClient';
 
 const loading = ref<boolean> (false);
 const password = ref<string> ("");

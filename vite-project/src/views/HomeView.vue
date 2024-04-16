@@ -9,7 +9,7 @@
 <script setup lang="ts">
 
 import { ref, onMounted, toRefs } from 'vue';
-import { supabase } from '@/lib/supabaseClient.js';
+import { supabase } from '@/lib/supabaseClient';
 import LoginAuth from '@/components/LoginAuth.vue';
 import LootboxMenu from '@/components/LootboxMenu.vue';
 import { getSkins } from '@/stores/lootboxes';
@@ -27,24 +27,22 @@ onMounted(async () => {
     } catch (error) {
         console.warn(error);
     }
+    supabase.auth.getSession().then(({ data }) => {
+      session.value = data.session;
+      console.log(data)
+    })
+    
+    supabase.auth.onAuthStateChange((_, _session) => {
+      session.value = _session
+    })
+
 });
 
 /*async function getUsers (): Promise<void> {
   const userTable = await supabase.from('users').select();
   users.value = userTable.data;
   console.log(userTable)
-}
-
-onMounted(() => {
-  getUsers();
-  supabase.auth.getSession().then(({ data }) => {
-    session.value = data.session
-  })
-
-  supabase.auth.onAuthStateChange((_, _session) => {
-    session.value = _session
-  })
-});*/
+}*/
 
 </script>
 
