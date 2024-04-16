@@ -17,10 +17,11 @@ const email = ref<string> ("");
 const handleLogin = async () => {
   try {
     loading.value = true;
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email.value,
       password: password.value
     });
+    console.log(data)
     if (error) throw error;
     alert('Logging in...');
   } catch (error) {
