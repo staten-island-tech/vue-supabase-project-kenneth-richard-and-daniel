@@ -6,7 +6,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/home',
       name: 'home',
       component: HomeView
     }, {
@@ -14,7 +14,7 @@ const router = createRouter({
       name: 'all-skins',
       component: () => import('../views/SkinView.vue')
     }, {
-      path: '/test',
+      path: '/',
       name: 'test',
       component: () => import('../views/TestView.vue')
     }, {
