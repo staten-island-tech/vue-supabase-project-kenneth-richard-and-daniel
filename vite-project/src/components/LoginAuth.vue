@@ -22,6 +22,7 @@ const email = ref<string> ("");
       email: email.value,
       password: password.value
     });
+    console.log(data)
     if (error) throw error;
     alert('Logging in...');
   } catch (error) {
