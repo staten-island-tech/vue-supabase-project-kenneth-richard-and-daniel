@@ -10,7 +10,7 @@
 
 import { ref, onMounted, toRefs } from 'vue';
 import { supabase } from '@/lib/supabaseClient';
-import LoginAuth from '@/components/LoginAuth.vue';
+//import LoginAuth from '@/components/LoginAuth.vue';
 import LootboxMenu from '@/components/LootboxMenu.vue';
 import { getSkins } from '@/stores/lootboxes';
 import LootboxChances from '@/components/LootboxChances.vue';
