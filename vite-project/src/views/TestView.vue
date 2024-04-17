@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { supabase } from '@/lib/supabaseClient';
 import { onMounted, ref, toRefs } from 'vue'
 
@@ -102,5 +102,18 @@ async function signOut() {
     <div>
       <button class="button block" @click="signOut" :disabled="loading">Sign Out</button>
     </div>
-  </form>
+  </form> -->
+
+<template>
+  <div>
+    <LoginAuth/>
+  </div>
 </template>
+
+<script setup lang="ts">
+import LoginAuth from '@/components/LoginAuth.vue';
+</script>
+
+<style scoped>
+
+</style>

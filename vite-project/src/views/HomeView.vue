@@ -1,8 +1,8 @@
 <template>
   <div>
 <!--<LootboxChances v-if="weapons" :Skins="weapons" />-->
-    <LootboxMenu v-if="weapons && session" :Skins="weapons" />
-    <LoginAuth v-else/>
+    <LootboxMenu v-if="weapons /* && session */" :Skins="weapons" />
+<!--     <LoginAuth v-else/> -->
   </div>
 </template>
 
@@ -10,7 +10,7 @@
 
 import { ref, onMounted, toRefs } from 'vue';
 import { supabase } from '@/lib/supabaseClient';
-import LoginAuth from '@/components/LoginAuth.vue';
+//import LoginAuth from '@/components/LoginAuth.vue';
 import LootboxMenu from '@/components/LootboxMenu.vue';
 import { getSkins } from '@/stores/lootboxes';
 import LootboxChances from '@/components/LootboxChances.vue';
