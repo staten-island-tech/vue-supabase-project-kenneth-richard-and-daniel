@@ -1,4 +1,6 @@
 <template>
+  <h1>a</h1>
+
   <Transition name="unlock">
     <div v-if="finished" class="unlockBackground">
       <div class="unlockMenu"  :class="{ common: outcome.rarity == 'Common', rare: outcome.rarity == 'Rare', epic: outcome.rarity == 'Epic', legendary : outcome.rarity == 'Legendary', godly: outcome.rarity == 'Godly' }">
@@ -72,6 +74,7 @@ type WeaponSkin = {
 
 type Props = {
   Skins: NewWeapon[];
+  session: any;
 }
 
 const wheel = ref<WeaponSkin[]> ([]);
@@ -91,6 +94,8 @@ const pitied = ref<boolean> (false);
 
 let rollNumber: number = 0;
 const props = defineProps<Props>();
+
+console.log(props.session)
 
 const allSkins: WeaponSkin[][] = props.Skins.map((item: NewWeapon) => item.skins);
 const emptyArray: WeaponSkin[] = [];

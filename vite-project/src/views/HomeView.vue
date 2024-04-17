@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--<LootboxChances v-if="weapons" :Skins="weapons" />-->
-    <LootboxMenu v-if="weapons && session" :Skins="weapons" />
+    <LootboxMenu v-if="session" :Skins="weapons" :session="session" />
     <LoginAuth v-else/>
   </div>
 </template>
@@ -10,7 +10,7 @@
 
 import { ref, onMounted, toRefs } from 'vue';
 import { supabase } from '@/lib/supabaseClient';
-//import LoginAuth from '@/components/LoginAuth.vue';
+import LoginAuth from '@/components/LoginAuth.vue';
 import LootboxMenu from '@/components/LootboxMenu.vue';
 import { getSkins } from '@/stores/lootboxes';
 import LootboxChances from '@/components/LootboxChances.vue';
@@ -19,14 +19,14 @@ const users = ref<any> ();
 const loaded = ref<boolean> (false);
 const session = ref<any> ();
 
-const weapons = ref<any> ();
+const weapons = ref<any> ();  
   
-onMounted(async () => {
-    try {
+onMounted(/*async*/ () => {
+    /*try {
         weapons.value = await getSkins();
     } catch (error) {
         console.warn(error);
-    }
+    }*/
     supabase.auth.getSession().then(({ data }) => {
       session.value = data.session;
       console.log(data)
