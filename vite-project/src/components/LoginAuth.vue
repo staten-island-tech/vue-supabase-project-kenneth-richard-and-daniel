@@ -9,10 +9,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { supabase } from '@/lib/supabaseClient';
+import { sessionStore } from '@/stores/session';
 
 const loading = ref<boolean> (false);
 const password = ref<string> ("");
 const email = ref<string> ("");
+const session = sessionStore().session;
 
 const handleLogin = async () => {
   try {
@@ -23,7 +25,12 @@ const handleLogin = async () => {
     });
     console.log(data)
     if (error) throw error;
-    alert('Logging in...');
+    alert('Logging in...'); 
+
+    session.access_token = data.session.access_token;
+
+    console.log(session)
+
   } catch (error) {
     if (error instanceof Error) {
       alert(error.message);

@@ -21,20 +21,21 @@ const session = ref<any> ();
 
 const weapons = ref<any> ();  
   
-onMounted(/*async*/ () => {
-    /*try {
+onMounted(async () => {
+    try {
         weapons.value = await getSkins();
     } catch (error) {
         console.warn(error);
-    }*/
-    supabase.auth.getSession().then(({ data }) => {
+    }
+
+    /*supabase.auth.getSession().then(({ data }) => {
       session.value = data.session;
       console.log(data)
     })
     
     supabase.auth.onAuthStateChange((_, _session) => {
       session.value = _session
-    })
+    })*/
 
 });
 
