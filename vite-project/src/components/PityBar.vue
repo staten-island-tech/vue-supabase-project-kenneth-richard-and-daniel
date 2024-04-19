@@ -18,7 +18,6 @@ const pityNumber: number = 10;
 const emit = defineEmits(["response"]);
 
 if (boxesSinceLast.value >= pityNumber) {
-    console.log(boxesSinceLast.value, pityNumber)
     emit("response", true);
 };
 
