@@ -1,20 +1,4 @@
 <template>
-    <!--<div class="rarity common" :class="{ gray: props.Current.rarity != 'Common' }">
-        <h3>Common: {{ common }}%</h3>
-    </div>
-    <div class="rarity rare" :class="{ gray: props.Current.rarity != 'Rare' }">
-        <h3>Rare: {{ rare }}%</h3>
-    </div>
-    <div class="rarity epic" :class="{ gray: props.Current.rarity != 'Epic' }">
-        <h3>Epic: {{ epic }}%</h3>
-    </div>
-    <div class="rarity legendary" :class="{ gray: props.Current.rarity != 'Legendary' }">
-        <h3>Legendary: {{ legendary }}%</h3>
-    </div>
-    <div class="rarity godly" :class="{ gray: props.Current.rarity != 'Godly' }">
-        <h3>Godly: {{ godly }}%</h3>
-    </div>-->
-
     <div v-for="skin in props.Wheel" class="rarity" :class="skin.rarity[0].toLowerCase() + skin.rarity.slice(1)">
         <h3>{{ skin.rarity }}: {{ getRarity(skin.rarity) }}%</h3>
     </div>
@@ -22,23 +6,8 @@
 
 <script setup lang="ts">
 
+import type { WeaponSkin } from '@/assets/types';
 import { ref, onMounted } from 'vue';
-
-type NewWeapon = {
-    displayIcon: string;
-    displayName: string;
-    category: string | null;
-    cost: number | null;
-    skins: WeaponSkin[];
-}
-
-type WeaponSkin = {
-    displayIcon: string | undefined;
-    displayName: string;
-    levelsCount: number;
-    wallpaper: string | null;
-    rarity: string;
-}
 
 type Props = {
     Skins: WeaponSkin[];
@@ -47,8 +16,6 @@ type Props = {
 }
 
 const props = defineProps<Props>();
-
-// console.log(props.Current)
 
 const combinedSkins: WeaponSkin[] = props.Skins;
 
