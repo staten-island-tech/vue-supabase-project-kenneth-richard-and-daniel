@@ -1,5 +1,4 @@
 <template>
-  <h1>a</h1>
 
   <Transition name="unlock">
     <div v-if="finished" class="unlockBackground">
@@ -51,33 +50,25 @@
 
 // import { supabase } from '@/lib/supabaseClient';
 import { ref, onMounted, toRefs } from 'vue';
+import { delay, getRandomIntInclusive } from '@/assets/functions';
 import LootboxChances from '@/components/LootboxChances.vue';
 import PityBar from './PityBar.vue';
-
-type NewWeapon = {
-    displayIcon: string;
-    displayName: string;
-    category: string | null;
-    cost: number | null;
-    skins: WeaponSkin[];
-}
-
-type WeaponSkin = {
-    defaultName: string;
-    category: string | null;
-    displayIcon: string | undefined;
-    displayName: string;
-    levelsCount: number;
-    wallpaper: string | null;
-    rarity: string;
-}
+import type { NewWeapon, WeaponSkin } from '@/assets/types';
+import { supabase } from '@/lib/supabaseClient';
+import { sessionStore } from '@/stores/session';
 
 type Props = {
   Skins: NewWeapon[];
-  session: any;
-}
+};
+
+const props = defineProps<Props>();
+const skins = props.Skins;
 
 const wheel = ref<WeaponSkin[]> ([]);
+const finished = ref<boolean> (false);
+const rolling = ref<boolean> (false);
+const filtered = ref<WeaponSkin[]> ([]);
+const pitied = ref<boolean> (false);
 const outcome = ref<WeaponSkin> ({
   defaultName: "",
   category: null,
@@ -87,17 +78,10 @@ const outcome = ref<WeaponSkin> ({
   wallpaper: "",
   rarity: "",
 });
-const finished = ref<boolean> (false);
-const rolling = ref<boolean> (false);
-const filtered = ref<WeaponSkin[]> ([]);
-const pitied = ref<boolean> (false);
 
 let rollNumber: number = 0;
-const props = defineProps<Props>();
 
-console.log(props.session)
-
-const allSkins: WeaponSkin[][] = props.Skins.map((item: NewWeapon) => item.skins);
+const allSkins: WeaponSkin[][] = skins.map((item: NewWeapon) => item.skins);
 const emptyArray: WeaponSkin[] = [];
 const combinedSkins: WeaponSkin[] = pitied.value == false ? emptyArray.concat(...allSkins) : emptyArray.concat(...allSkins).filter((skin) => skin.rarity != "Common");
 filtered.value = combinedSkins;
@@ -125,7 +109,7 @@ async function roll (): Promise<void> {
     wheel.value.push(randomSkin);
     wheel.value.splice(0, 1);
 
-    /*if (rollNumber < 110) {
+    if (rollNumber < 110) {
       await delay(25);
 
     } else if (rollNumber < 120) {
@@ -145,12 +129,30 @@ async function roll (): Promise<void> {
 
     } else if (rollNumber <= roll - 1) {
       await delay(1000);
-    }*/
+    }
 
     rollNumber++;
   }
 
   outcome.value = wheel.value[2];
+
+  try {
+    console.log(sessionStore().session.id, outcome.value.displayName)
+    const { data, error } = await supabase.from('inventory').insert([{
+      id: sessionStore().session.id,
+      skin_name: outcome.value.displayName,
+    }]);
+
+    if (error) throw error;
+
+    console.log(data)
+
+  } catch (error: any) {
+    if (error instanceof Error) {
+      alert(error.message);
+    }
+  }
+
   await delay(1750);
 
   finished.value = true;
@@ -160,53 +162,6 @@ async function roll (): Promise<void> {
     pitied.value = false;
   }
 }
-
-function delay (ms: number) {
-  return new Promise((executor: any) => setTimeout(executor, ms));
-}
-
-function getRandomIntInclusive(min: number, max: number): number {
-  const minCeiled: number = Math.ceil(min);
-  const maxFloored: number = Math.floor(max);
-  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
-}
-
-/*const props = defineProps(['session']);
-const { session } = toRefs<any> (props);
-const loading = ref(true);
-const username = ref('');
-const website = ref('');
-const avatar_url = ref('');
-
-async function getProfile() {
-  try {
-    loading.value = true;
-    const { user } = session.value;
-
-    const { data, error, status } = await supabase
-      .from('profiles')
-      .select(`username, website, avatar_url`)
-      .eq('id', user.id)
-      .single();
-
-    if (error && status !== 406) throw error;
-
-    if (data) {
-      username.value = data.username;
-      website.value = data.website;
-      avatar_url.value = data.avatar_url;
-    }
-    console.log(username.value, website.value, avatar_url.value)
-  } catch (error: any) {
-    alert(error.message);
-  } finally {
-    loading.value = false;
-  }
-}
-
-onMounted(() => {
-    getProfile();
-});*/
 
 </script>
 

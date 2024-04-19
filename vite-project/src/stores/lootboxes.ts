@@ -1,94 +1,5 @@
 
-type ApiData = {
-    status: number;
-    data: {
-        assetPath: string;
-        category: string;
-        defaultSkinUuid: string;
-        displayIcon: string;
-        displayName: string;
-        killStreamIcon: string;
-        shopData: {
-            assetPath: string;
-            canBeTrashed: boolean;
-            category: string;
-            categoryText: string;
-            cost: number;
-            gridPosition: object;
-            image: string | null;
-            newImage: string | null;
-            newImage2: string | null;
-            shopOrderPriority: number | null;
-        };
-        skins: {
-            assetPath: string;
-            chromas: object[];
-            contentTierUuid: string;
-            displayIcon: string;
-            displayName: string;
-            levels: object[];
-            themeUuid: string;
-            uuid: string;
-            wallpaper: string | null;
-        }[];
-        uuid: string;
-        weaponStats: object;
-    }[];
-}
-
-type ApiWeapon = {
-    assetPath: string;
-    category: string;
-    defaultSkinUuid: string;
-    displayIcon: string;
-    displayName: string;
-    killStreamIcon: string;
-    shopData: {
-        assetPath: string;
-        canBeTrashed: boolean;
-        category: string;
-        categoryText: string;
-        cost: number;
-        gridPosition: object;
-        image: string | null;
-        newImage: string | null;
-        newImage2: string | null;
-        shopOrderPriority: number | null;
-    };
-    skins: ApiSkin[];
-    uuid: string;
-    weaponStats: object;
-}
-
-type ApiSkin = {
-    assetPath: string;
-    chromas: object[];
-    contentTierUuid: string;
-    displayIcon: string;
-    displayName: string;
-    levels: object[];
-    themeUuid: string;
-    uuid: string;
-    wallpaper: string | null;
-}
-
-type NewWeapon = {
-    displayIcon: string;
-    displayName: string;
-    category: string | null;
-    cost: number | null;
-    skins: WeaponSkin[];
-}
-
-type WeaponSkin = {
-    defaultName: string;
-    category: string | null;
-    displayIcon: string | null;
-    displayName: string;
-    levelsCount: number;
-    wallpaper: string | null;
-    rarity: string;
-}
+import type { ApiData, ApiSkin, ApiWeapon, NewWeapon, WeaponSkin } from "@/assets/types";
 
 function checkSkin (name: string, img: string): boolean {
     if (name.includes("Standard")) {
@@ -136,7 +47,7 @@ function getRarity (weapon: ApiWeapon, skin: ApiSkin): string {
     return rarity;
 }
 
-async function getSkins () {
+async function getSkins (): Promise<NewWeapon[]> {
     let data: ApiData = {
         status: 0,
         data: []
@@ -176,8 +87,6 @@ async function getSkins () {
         }
         skinArray.push(obj);
     }
-
-    // console.log(skinArray);
 
     return skinArray;
 }

@@ -1,9 +1,8 @@
 <template>
   <header>
     <nav>
-      <RouterLink to="/home"><h3>Lootboxes</h3></RouterLink>
+      <RouterLink to="/"><h3>Lootboxes</h3></RouterLink>
       <RouterLink to="/inventory"><h3>Inventory</h3></RouterLink>
-      <RouterLink to="/"><h3>Test</h3></RouterLink>
     </nav>
   </header>
 

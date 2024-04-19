@@ -1,49 +1,33 @@
 <template>
   <div>
-    <!--<LootboxChances v-if="weapons" :Skins="weapons" />-->
-    <LootboxMenu v-if="session" :Skins="weapons" :session="session" />
+    <LootboxMenu v-if="weapons && session && session.access_token != ''" :Skins="weapons" />
     <LoginAuth v-else/>
   </div>
 </template>
 
 <script setup lang="ts">
 
-import { ref, onMounted, toRefs } from 'vue';
-import { supabase } from '@/lib/supabaseClient';
+import { ref, onMounted, watch } from 'vue';
 import LoginAuth from '@/components/LoginAuth.vue';
 import LootboxMenu from '@/components/LootboxMenu.vue';
 import { getSkins } from '@/stores/lootboxes';
-import LootboxChances from '@/components/LootboxChances.vue';
+import { sessionStore } from '@/stores/session';
 
-const users = ref<any> ();
-const loaded = ref<boolean> (false);
 const session = ref<any> ();
-
 const weapons = ref<any> ();  
-  
-onMounted(async () => {
-    try {
-        weapons.value = await getSkins();
-    } catch (error) {
-        console.warn(error);
-    }
 
-    /*supabase.auth.getSession().then(({ data }) => {
-      session.value = data.session;
-      console.log(data)
-    })
-    
-    supabase.auth.onAuthStateChange((_, _session) => {
-      session.value = _session
-    })*/
-
+watch(() => sessionStore().session, (newSession) => {
+  session.value = newSession;
 });
 
-/*async function getUsers (): Promise<void> {
-  const userTable = await supabase.from('users').select();
-  users.value = userTable.data;
-  console.log(userTable)
-}*/
+onMounted(async () => {
+  session.value = sessionStore().session;
+  try {
+    weapons.value = await getSkins();
+  } catch (error) {
+    console.warn(error);
+  }
+});
 
 </script>
 

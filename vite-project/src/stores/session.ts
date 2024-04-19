@@ -1,14 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-
-type SessionData = {
-  access_token: string;
-  refresh_token: string;
-  token_type: string;
-  authenticated: boolean;
-  id: string;
-  email: string;
-}
+import type { SessionData } from "@/assets/types";
 
 export const sessionStore = defineStore("session", () => {
   const session = ref<SessionData> ({
@@ -20,6 +12,10 @@ export const sessionStore = defineStore("session", () => {
     email: ""
   });
 
-  return { session }
+  function changeSession (newSession: SessionData) {
+    session.value = newSession;
+  }
+
+  return { session, changeSession }
   
 });
