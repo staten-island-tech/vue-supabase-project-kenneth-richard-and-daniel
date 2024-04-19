@@ -109,7 +109,7 @@ async function roll (): Promise<void> {
     wheel.value.push(randomSkin);
     wheel.value.splice(0, 1);
 
-    if (rollNumber < 110) {
+    /*if (rollNumber < 110) {
       await delay(25);
 
     } else if (rollNumber < 120) {
@@ -129,7 +129,7 @@ async function roll (): Promise<void> {
 
     } else if (rollNumber <= roll - 1) {
       await delay(1000);
-    }
+    }*/
 
     rollNumber++;
   }
@@ -138,14 +138,12 @@ async function roll (): Promise<void> {
 
   try {
     console.log(sessionStore().session.id, outcome.value.displayName)
-    const { data, error } = await supabase.from('inventory').insert([{
+    const { error } = await supabase.from('inventory').insert({
       id: sessionStore().session.id,
       skin_name: outcome.value.displayName,
-    }]);
+    });
 
     if (error) throw error;
-
-    console.log(data)
 
   } catch (error: any) {
     if (error instanceof Error) {
