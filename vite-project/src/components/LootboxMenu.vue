@@ -14,7 +14,7 @@
             <h3>Roll Again</h3>
           </button>
           <RouterLink to="/inventory" class="finishedButton inventoryButton">
-            <img src="/chest.svg" alt="Click to view your inventory">
+            <img src="/backpack.svg" alt="Click to view your inventory">
             <h3>Inventory</h3>
           </RouterLink>
         </div>
@@ -23,11 +23,11 @@
   </Transition>
 
   <div class="pityBar">
-    <PityBar @response="pity"/>
+    <PityBar />
   </div>
 
   <div class="chanceMenu">
-    <LootboxChances :Skins="filtered" :Current="wheel[2]" :Wheel="wheel"/>
+    <LootboxChances v-if="loadChances" :Skins="filtered" :Current="wheel[2]" :Wheel="wheel"/>
   </div>
 
   <div class="lootboxMenu">
@@ -37,25 +37,33 @@
       </div>
     </div>
     <img src="/upArrow.svg" alt="This skin will be drawn" class="arrow">
-    <button @click="roll" class="openCrate">
-      <img src="/unlock.svg" alt="Click to open the lootbox" class="arrow" :class="{ locked: rolling }">
-      <h3 v-if="rolling" class="unlockingText">Opening...</h3>
-      <h3 v-else class="unlockText">Open Lootbox</h3>
-    </button>
+    <div class="rollButtonArray">
+      <button @click="roll" class="openCrate">
+        <img src="/unlock.svg" alt="Click to open the lootbox" class="arrow" :class="{ locked: rolling }">
+        <h3 v-if="rolling" class="unlockingText">Opening...</h3>
+        <h3 v-else class="unlockText">Open Lootbox</h3>
+      </button>
+      <button @click="spin" class="fastOpen" :class="{ enabledFast: clientStore().fastSpin, disabledFast: rolling }">
+        <img src="/fastForward.svg" alt="Click to speed up opening" class="arrow">
+        <h3 v-if="rolling">Wait for box...</h3>
+        <h3 v-else-if="clientStore().fastSpin">Fast Opening</h3>
+        <h3 v-else>Slow Opening</h3>
+      </button>
+    </div>
   </div>
 
 </template>
 
 <script setup lang="ts">
 
-// import { supabase } from '@/lib/supabaseClient';
-import { ref, onMounted, toRefs } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { delay, getRandomIntInclusive } from '@/assets/functions';
 import LootboxChances from '@/components/LootboxChances.vue';
 import PityBar from './PityBar.vue';
-import type { NewWeapon, WeaponSkin } from '@/assets/types';
+import type { NewWeapon, UserProfile, WeaponSkin } from '@/assets/types';
 import { supabase } from '@/lib/supabaseClient';
 import { sessionStore } from '@/stores/session';
+import { clientStore } from '@/stores/client';
 
 type Props = {
   Skins: NewWeapon[];
@@ -68,7 +76,6 @@ const wheel = ref<WeaponSkin[]> ([]);
 const finished = ref<boolean> (false);
 const rolling = ref<boolean> (false);
 const filtered = ref<WeaponSkin[]> ([]);
-const pitied = ref<boolean> (false);
 const outcome = ref<WeaponSkin> ({
   defaultName: "",
   category: null,
@@ -77,22 +84,55 @@ const outcome = ref<WeaponSkin> ({
   levelsCount: 0,
   wallpaper: "",
   rarity: "",
+  inventoryCount: 1,
 });
+const loadChances = ref<boolean> (false);
 
 let rollNumber: number = 0;
 
 const allSkins: WeaponSkin[][] = skins.map((item: NewWeapon) => item.skins);
 const emptyArray: WeaponSkin[] = [];
-const combinedSkins: WeaponSkin[] = pitied.value == false ? emptyArray.concat(...allSkins) : emptyArray.concat(...allSkins).filter((skin) => skin.rarity != "Common");
+let combinedSkins: WeaponSkin[] = emptyArray.concat(...allSkins);
 filtered.value = combinedSkins;
 
-function pity (): void {
-  pitied.value = true;
+onMounted(async () => {
+  loadChances.value = false;
+  setWheel();
+  loadChances.value = true;
+
+  try {
+    const { data, error } = await supabase.from('profiles').select();
+    if (error) throw error;
+    clientStore().currentPity = data.find((user) => user.id == sessionStore().session.id).boxes_since_last;
+  } catch (error) {
+    if (error instanceof Error) {
+      alert(error.message);
+    }
+  }
+});
+
+watch(() => clientStore().currentPity, (newPity: number) => {
+  if (newPity >= 15) {
+    combinedSkins = emptyArray.concat(...allSkins).filter((skin) => skin.rarity == "Legendary" || skin.rarity == "Godly");
+  } else {
+    combinedSkins = emptyArray.concat(...allSkins);
+  }
+});
+
+function setWheel (): void {
+  wheel.value.length = 0;
+  for (let i = 0; i < 5; i++) {
+    const randomSkin: WeaponSkin = combinedSkins[getRandomIntInclusive(0, combinedSkins.length - 1)];
+    wheel.value.push(randomSkin);
+  }
 }
 
-for (let i = 0; i < 5; i++) {
-  const randomSkin: WeaponSkin = combinedSkins[getRandomIntInclusive(0, combinedSkins.length - 1)];
-  wheel.value.push(randomSkin);
+function spin (): void {
+  if (rolling.value == true) {
+    return;
+  } else {
+    clientStore().fastSpin = !clientStore().fastSpin;
+  }
 }
 
 async function roll (): Promise<void> {
@@ -109,55 +149,111 @@ async function roll (): Promise<void> {
     wheel.value.push(randomSkin);
     wheel.value.splice(0, 1);
 
-    /*if (rollNumber < 110) {
-      await delay(25);
-
-    } else if (rollNumber < 120) {
-      await delay(50);
-
-    } else if (rollNumber < 130) {
-      await delay(100);
-
-    } else if (rollNumber < 140) {
-      await delay(200);
-
-    } else if (rollNumber < 140 + (2 * Math.round(((roll - 1) - 140)/3))) {
-      await delay(300);
-
-    } else if (rollNumber < roll - 1) {
-      await delay(650);
-
-    } else if (rollNumber <= roll - 1) {
-      await delay(1000);
-    }*/
-
+    await rollAnimation(roll);
+    
     rollNumber++;
   }
-
+  
   outcome.value = wheel.value[2];
+  
+  await delay(1000);
+  
+  await insertData();
+  finished.value = true;
+  rolling.value = false;
+}
 
+async function rollAnimation (roll: number): Promise<void> {
+  let roll1 = 25;
+  let roll2 = 50;
+  let roll3 = 100;
+  let roll4 = 200;
+  let roll5 = 300;
+  let roll6 = 650;
+  let roll7 = 1000;
+
+  if (clientStore().fastSpin == true) {
+    roll1 = 10;
+    roll2 = 20;
+    roll3 = 35;
+    roll4 = 65;
+    roll5 = 90;
+    roll6 = 200;
+    roll7 = 450;
+  }
+
+  if (rollNumber < 110) {
+    await delay(roll1);
+  
+  } else if (rollNumber < 120) {
+    await delay(roll2);
+  
+  } else if (rollNumber < 130) {
+    await delay(roll3);
+  
+  } else if (rollNumber < 140) {
+    await delay(roll4);
+  
+  } else if (rollNumber < 140 + (2 * Math.round(((roll - 1) - 140)/3))) {
+    await delay(roll5);
+  
+  } else if (rollNumber < roll - 1) {
+    await delay(roll6);
+  
+  } else if (rollNumber <= roll - 1) {
+    await delay(roll7);
+  }
+
+}
+
+async function insertData (): Promise<void> {
+  let userProfile: UserProfile = {
+    id: sessionStore().session.id,
+    boxes_since_last: 0,
+  };
+
+  // get boxes_since_last
   try {
-    console.log(sessionStore().session.id, outcome.value.displayName)
+    const { data, error } = await supabase.from('profiles').select();
+    if (error) throw error;
+    userProfile.boxes_since_last = data.find((user) => user.id == sessionStore().session.id).boxes_since_last;
+  } catch (error) {
+    if (error instanceof Error) {
+      alert(error.message);
+    }
+  }
+
+  // add item to inventory
+  try {
     const { error } = await supabase.from('inventory').insert({
       id: sessionStore().session.id,
       skin_name: outcome.value.displayName,
     });
-
+    clientStore().currentInventory.push(combinedSkins.find((item) => item.displayName == outcome.value.displayName));
     if (error) throw error;
-
   } catch (error: any) {
     if (error instanceof Error) {
       alert(error.message);
     }
   }
 
-  await delay(1750);
+  if (!["Legendary", "Godly"].includes(outcome.value.rarity)) {
+    userProfile.boxes_since_last++;
+  } else {
+    userProfile.boxes_since_last = 0;
+  }
 
-  finished.value = true;
-  rolling.value = false;
-
-  if (pitied.value == true) {
-    pitied.value = false;
+  // update boxes_since_last
+  try {
+    const { error } = await supabase.from('profiles').update({
+      boxes_since_last: userProfile.boxes_since_last
+    }).eq('id', sessionStore().session.id);
+    if (error) throw error;
+    clientStore().changePity(userProfile.boxes_since_last);
+  } catch (error) {
+    if (error instanceof Error) {
+      alert(error.message);
+    }
   }
 }
 
@@ -201,6 +297,58 @@ async function roll (): Promise<void> {
   height: 7.5em;
 }
 
+.rollButtonArray {
+  display: flex;
+  width: 50%;
+  margin-top: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4em;
+}
+
+.fastOpen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2em;
+  background-color: #ff5050;
+  border-width: 0.2em;
+  border-radius: 2.5em;
+  transition: all 0.5s;
+  width: 18em;
+  overflow: hidden;
+}
+.fastOpen h3 {
+  position: absolute;
+  display: none;
+  margin: 0;
+}
+.fastOpen img {
+  transition: all 0.5s;
+}
+
+.fastOpen:hover h3 {
+  display: block;
+}
+.fastOpen:hover img {
+  transform: translateX(15em);
+}
+
+.enabledFast {
+  background-color: var(--deepGreen);
+}
+.enabledFast h3 {
+  display: block;
+}
+.enabledFast img {
+  transform: translateX(15em);
+}
+
+.disabledFast {
+  background-color: var(--darkGray);
+}
+
 .openCrate {
   display: flex;
   align-items: center;
@@ -212,7 +360,6 @@ async function roll (): Promise<void> {
   transition: all 0.5s;
   width: 18em;
   overflow: hidden;
-  margin-top: 5em;
 }
 .openCrate .unlockText {
   position: absolute;
@@ -328,7 +475,7 @@ async function roll (): Promise<void> {
   padding: 1em;
   gap: 1.5em;
   transition: all 0.5s;
-  margin-top: 7.5em;
+  margin-top: 3em;
   margin-bottom: 2.5em;
 }
 
