@@ -105,7 +105,7 @@ export type UserProfile = {
     boxes_since_last: number;
 }
 
-export type Inventory = (WeaponSkin | undefined)[];
+export type Inventory = WeaponSkin[];
 
 export type ClientStore = {
     currentInventory: Inventory;
