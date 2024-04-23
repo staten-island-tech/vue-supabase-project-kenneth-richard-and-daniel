@@ -47,7 +47,7 @@ async function getData (): Promise<void> {
   height: 3em;
   background-color: var(--lightContent);
   border-radius: 3em;
-  margin-top: 4em;
+  margin-top: 17em;
   transition: all 0.5s;
 }
 

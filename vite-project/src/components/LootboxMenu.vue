@@ -228,8 +228,12 @@ async function insertData (): Promise<void> {
     const { error } = await supabase.from('inventory').insert({
       id: sessionStore().session.id,
       skin_name: outcome.value.displayName,
+      date: new Date(),
     });
-    clientStore().currentInventory.push(combinedSkins.find((item) => item.displayName == outcome.value.displayName));
+    const skin = combinedSkins.find((item) => item.displayName == outcome.value.displayName);
+    if (skin) {
+      clientStore().currentInventory.push(skin);
+    }
     if (error) throw error;
   } catch (error: any) {
     if (error instanceof Error) {

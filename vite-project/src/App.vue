@@ -37,6 +37,8 @@ header {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 90%, transparent);
   width: 100%;
   height: 13em;
+  position: fixed;
+  z-index: 9999999;
 }
 
 .headerDiv {

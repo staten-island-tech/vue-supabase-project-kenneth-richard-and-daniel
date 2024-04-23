@@ -108,6 +108,7 @@ const handleSignup = async () => {
   align-items: center;
   justify-content: center;
   margin-bottom: 5em;
+  margin-top: 17em;
 }
 
 .title h1,
