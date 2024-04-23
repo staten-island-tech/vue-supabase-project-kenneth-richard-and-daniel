@@ -8,18 +8,35 @@
 
 <script setup lang="ts">
 
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
+import { supabase } from '@/lib/supabaseClient';
+import { sessionStore } from '@/stores/session';
+import { clientStore } from '@/stores/client';
 
-// get supabase user data
-// find how many boxes opened since last legendary/godly
+const boxesSinceLast = ref<number> (0);
+const pityNumber: number = 15;
 
-const boxesSinceLast = ref<number> (10);
-const pityNumber: number = 10;
-const emit = defineEmits(["response"]);
+watch(() => clientStore().currentPity, (newPity: number) => {
+  boxesSinceLast.value = newPity;
+});
 
-if (boxesSinceLast.value >= pityNumber) {
-    emit("response", true);
-};
+onMounted(async () => {
+  getData();
+});
+
+async function getData (): Promise<void> {
+    try {
+        const { data, error } = await supabase.from('profiles').select()
+        if (error) throw error;
+
+        boxesSinceLast.value = data.find((user) => user.id == sessionStore().session.id).boxes_since_last;
+
+    } catch (error) {
+        if (error instanceof Error) {
+            alert(error.message);
+        }
+    }
+}
 
 </script>
 
@@ -30,11 +47,8 @@ if (boxesSinceLast.value >= pityNumber) {
   height: 3em;
   background-color: var(--lightContent);
   border-radius: 3em;
-  margin-top: 1em;
+  margin-top: 4em;
   transition: all 0.5s;
-}
-#progressBar:hover {
-  transform: scaleX(1.05);
 }
 
 .fillerBar {

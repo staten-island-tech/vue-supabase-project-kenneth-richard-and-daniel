@@ -81,6 +81,7 @@ body {
   height: 100%;
   font-size: var(--standard);
   background: linear-gradient(to bottom right, var(--gradientGray1), var(--gradientGray2), var(--gradientGray3), var(--gradientGray4));
+  margin: 0;
 }
 
 h1 {font-size: var(--h1)}
@@ -98,4 +99,5 @@ button, a {
   color: black;
   border-color: black;
   touch-action: manipulation;
+  text-decoration: none;
 }
