@@ -36,7 +36,6 @@ const loading = ref<boolean>(false);
 const password = ref<string>('');
 const email = ref<string>('');
 const login = ref<boolean>(true);
-const session = sessionStore().session;
 
 const handleLogin = async () => {
   try {
