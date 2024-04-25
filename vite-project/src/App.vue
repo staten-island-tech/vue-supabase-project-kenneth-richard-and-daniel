@@ -113,7 +113,6 @@ function logout (): void {
 
 .signoutButtons button {
   font-size: 2.5em;
-  background-color: rgb(195, 195, 195);
   transition: all 0.5s;
   padding: 0.5em;
   border-radius: 1em;
@@ -121,7 +120,7 @@ function logout (): void {
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  height: 2.75em;
+  height: 2.65em;
   width: 35%;
 }
 
@@ -129,6 +128,13 @@ function logout (): void {
   width: 3em;
   height: 3em;
   margin-top: 1em;
+}
+
+.yes {
+  background-color: #ffc6c6;
+}
+.no {
+  background-color: #c5ffca;
 }
 
 .yes:hover {
@@ -209,13 +215,15 @@ header {
   height: 17em;
   position: fixed;
   z-index: 9999999;
+  display: flex;
+  justify-content: center;
 }
 
 .headerDiv {
   display: flex;
-  width: 99vw;
+  width: 90%;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   height: 10em;
   margin-top: 2em;
 }
