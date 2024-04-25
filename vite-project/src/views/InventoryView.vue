@@ -135,7 +135,7 @@ async function getData (): Promise<ApiData[]> {
 }
 
 .sort {
-  margin-top: 17em;
+  margin-top: 19em;
   margin-bottom: 4em;
   width: 50%;
   display: flex;
@@ -153,6 +153,9 @@ async function getData (): Promise<ApiData[]> {
   filter: grayscale(1);
   transition: all 0.5s;
   color: black;
+}
+.sortButton:hover {
+  filter: grayscale(0);
 }
 
 .enabled {
