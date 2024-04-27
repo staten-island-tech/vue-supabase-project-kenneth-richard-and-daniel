@@ -326,7 +326,7 @@ header {
 }
 
 .enabled {
-  filter: grayscale(0);
+  filter: grayscale(1);
 }
 
 </style>
