@@ -10,12 +10,16 @@
       </div>
       <nav class="navBar">
         <RouterLink to="/" class="lootboxes" :class="{ enabled: route.path == '/' }">
-          <img src="/chest.svg" alt="Lootboxes">
+          <img src="/chest.svg" alt="Lootboxes" id="bigboy">
           <h3>Lootboxes</h3>
         </RouterLink>
         <RouterLink to="/inventory" class="inventoryButton" :class="{ enabled: route.path == '/inventory' }">
           <img src="/backpack.svg" alt="Inventory">
           <h3>Inventory</h3>
+        </RouterLink>
+        <RouterLink to="/acc-search" class="searcher" :class="{ enabled: route.path == '/acc-search'}">
+          <img src="/magnify.svg" alt="Searcher">
+          <h3>Searcher</h3>
         </RouterLink>
       </nav>
     </div>
@@ -27,11 +31,11 @@
         <h1>Do you want to sign out?</h1>
         <div class="signoutButtons">
           <button class="yes" @click="logout">
-            Yes, sign out
+            Yes, sign out.
             <img src="/check.svg" alt="Click to confirm sign out">
           </button>
           <button class="no" @click="signout = false">
-            No, go back
+            No, go back.
             <img src="/cancel.svg" alt="Click to return to game">
           </button>
         </div>
@@ -238,7 +242,7 @@ header {
 
 .headerDiv {
   display: flex;
-  width: 90%;
+  width: 95%;
   align-items: center;
   justify-content: space-between;
   height: 10em;
@@ -271,13 +275,13 @@ header {
   align-items: center;
   justify-content: center;
   gap: 5%;
-  width: 50em;
+  width: 59em;
   height: fit-content;
 }
 .navBar > * {
   margin: 0;
   display: flex;
-  gap: 5%;
+  gap: 3%;
   height: 8em;
   align-items: center;
   justify-content: center;
@@ -290,14 +294,29 @@ header {
 
 .lootboxes {
   background-color: var(--deepYellow);
+  border-radius: 3em;
 }
 .lootboxes:hover {
   filter: grayscale(0);
 }
 .inventoryButton {
   background-color: var(--cyan);
+  border-radius: 3em;
 }
 .inventoryButton:hover {
+  filter: grayscale(0);
+}
+
+#bigboy {
+  height: 6em;
+  width: 7em;
+}
+
+.searcher {
+  background-color: var(--red);
+  border-radius: 3em;
+}
+.searcher:hover {
   filter: grayscale(0);
 }
 
