@@ -46,7 +46,7 @@
 <script setup lang="ts">
 
 import { RouterLink, RouterView, useRoute } from 'vue-router'
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { sessionStore } from './stores/session';
 
 const signout = ref<boolean> (false);
@@ -55,6 +55,21 @@ const email = ref<string | undefined> ("");
 
 watch(() => sessionStore().session, (newSession) => {
   email.value = newSession.email;
+});
+
+onMounted(() => {
+  const storedAuth = localStorage.getItem("sb-toztwtlkcpaxhvmqtbdu-auth-token");
+  if (storedAuth != null) {
+    const storedAuthJSON = JSON.parse(storedAuth);
+    sessionStore().changeSession({
+      access_token: storedAuthJSON.access_token,
+      refresh_token: storedAuthJSON.refresh_token,
+      token_type: storedAuthJSON.token_type,
+      authenticated: true,
+      id: storedAuthJSON.user.id,
+      email: storedAuthJSON.user.email
+    });
+  }
 });
 
 function logout (): void {
@@ -66,6 +81,8 @@ function logout (): void {
     id: "",
     email: ""
   });
+
+  localStorage.removeItem("sb-toztwtlkcpaxhvmqtbdu-auth-token");
 
   signout.value = false;
 }
