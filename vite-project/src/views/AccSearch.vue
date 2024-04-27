@@ -1,6 +1,7 @@
 <template>
     <div>
-        <h3>sup</h3>
+        <h3 id="woah">sup</h3>
+        <input type="text">
     </div>
 </template>
 
@@ -9,5 +10,7 @@
 </script>
 
 <style scoped>
-
+#woah {
+    margin-top: 19em;
+}
 </style>
