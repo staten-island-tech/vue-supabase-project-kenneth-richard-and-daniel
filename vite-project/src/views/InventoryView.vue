@@ -12,8 +12,8 @@
         </div>
 
         <div v-if="inventory.length == 0" class="wompwomp">
-            <h2>You don't have any items D:</h2>
-            <h3>Open some boxes to get started!</h3>
+            <h2>You don't have any items. L Bozo</h2>
+            <h3>Open some boxes to get started! :D</h3>
         </div>
     </div>
     <LoginAuth v-else/>
