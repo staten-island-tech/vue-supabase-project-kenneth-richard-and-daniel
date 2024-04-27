@@ -10,7 +10,7 @@
       </div>
       <nav class="navBar">
         <RouterLink to="/" class="lootboxes" :class="{ enabled: route.path == '/' }">
-          <img src="/chest.svg" alt="Lootboxes" id="bigboy">
+          <img src="/chest.svg" alt="Lootboxes">
           <h3>Lootboxes</h3>
         </RouterLink>
         <RouterLink to="/inventory" class="inventoryButton" :class="{ enabled: route.path == '/inventory' }">
@@ -275,7 +275,7 @@ header {
   align-items: center;
   justify-content: center;
   gap: 5%;
-  width: 59em;
+  width: 70em;
   height: fit-content;
 }
 .navBar > * {
@@ -307,13 +307,8 @@ header {
   filter: grayscale(0);
 }
 
-#bigboy {
-  height: 6em;
-  width: 7em;
-}
-
 .searcher {
-  background-color: var(--red);
+  background-color: var(--deepGreen);
   border-radius: 3em;
 }
 .searcher:hover {
@@ -326,7 +321,7 @@ header {
 }
 
 .enabled {
-  filter: grayscale(1);
+  filter: grayscale(0);
 }
 
 </style>
