@@ -17,9 +17,9 @@
           <img src="/backpack.svg" alt="Inventory">
           <h3>Inventory</h3>
         </RouterLink>
-        <RouterLink to="/acc-search" class="searcher" :class="{ enabled: route.path == '/acc-search'}">
+        <RouterLink to="/trade-search" class="trade" :class="{ enabled: route.path == '/trade-search'}">
           <img src="/magnify.svg" alt="Searcher">
-          <h3>Searcher</h3>
+          <h3>Trade</h3>
         </RouterLink>
       </nav>
     </div>
