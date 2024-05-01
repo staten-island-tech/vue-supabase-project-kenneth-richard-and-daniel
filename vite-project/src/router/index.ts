@@ -12,13 +12,13 @@ const router = createRouter({
       name: 'all-skins',
       component: () => import('../views/SkinView.vue')
     }, {
-      path: '/test',
-      name: 'test',
-      component: () => import('../views/TestView.vue')
-    }, {
       path: '/inventory',
       name: 'inventory',
       component: () => import('../views/InventoryView.vue')
+    }, {
+      path: '/acc-search',
+      name: 'acc-search',
+      component: () => import('../views/AccSearch.vue')
     }
   ]
 })

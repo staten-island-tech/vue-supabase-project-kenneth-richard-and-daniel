@@ -1,6 +1,6 @@
 <template>
   <div>
-    <LootboxMenu v-if="weapons && session && session.access_token != ''" :Skins="weapons" />
+    <LootboxMenu v-if="weapons && weapons.length != 0 && session && session.access_token != ''" :Skins="weapons" />
     <LoginAuth v-else/>
   </div>
 </template>
@@ -12,6 +12,7 @@ import LoginAuth from '@/components/LoginAuth.vue';
 import LootboxMenu from '@/components/LootboxMenu.vue';
 import { getSkins } from '@/stores/lootboxes';
 import { sessionStore } from '@/stores/session';
+import { clientStore } from '@/stores/client';
 
 const session = ref<any> ();
 const weapons = ref<any> ();  
@@ -22,8 +23,11 @@ watch(() => sessionStore().session, (newSession) => {
 
 onMounted(async () => {
   session.value = sessionStore().session;
+  weapons.value = clientStore().currentWeapons;
   try {
-    weapons.value = await getSkins();
+    const skins = await getSkins();
+    weapons.value = skins;
+    clientStore().currentWeapons = skins;
   } catch (error) {
     console.warn(error);
   }
