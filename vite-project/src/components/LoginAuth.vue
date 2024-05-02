@@ -5,25 +5,27 @@
       <h2>(NOT underage gambling)</h2>
       <h3>"90% of gamblers quit before they hit it big!"</h3>
       <h3>- a really smart dude</h3>
+      <h3>"90% of gamblers quit before they hit it big!"</h3>
+      <h3>- a really smart dude</h3>
     </div>
   
     <form @submit.prevent="handleLogin" v-if="login">
       <input required type="email" placeholder="Your email" v-model="email" />
       <input required type="text" placeholder="Your password" v-model="password" />
-      <input type="submit" :value="loading ? 'Loading' : 'Log in'" :disabled="loading" />
+      <input class = "loginbutt" type="submit" :value="loading ? 'Loading' : 'Log in'" :disabled="loading" />
     </form>
 
     <form @submit.prevent="handleSignup" v-else>
       <input required type="email" placeholder="Your email" v-model="email" />
       <input required type="text" placeholder="Your password" v-model="password" />
-      <input type="submit" :value="loading ? 'Loading' : 'Sign up'" :disabled="loading" />
+      <input class = "signupbutt" type="submit" :value="loading ? 'Loading' : 'Sign up'" :disabled="loading" />
     </form>
 
   </div>
 
   <button style="text-decoration: underline; color: white; background-color: transparent; border: 0;" @click="login = !login">
-    <h3 v-if="login">Don't have an account? Click to sign up</h3>
-    <h3 v-else>Already have an account? Click to log in</h3>
+    <h3 class = "signhov" v-if="login">Don't have an account? Click to sign up</h3>
+    <h3 class = "loghov" v-else>Already have an account? Click to log in</h3>
   </button>
 </template>
 
@@ -114,6 +116,51 @@ const handleSignup = async () => {
 .title h2,
 .title h3 {
   margin: 0;
+}
+
+.loginbutt {
+  text-decoration: none;
+  font-size: var(--h2);
+  width: 8em;
+  height: 1.5em;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+  overflow: hidden;
+  transition: all 0.5s;
+  border-radius: 0.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loginbutt:hover {
+  background-color: var(--lightBlue);
+}
+
+.signupbutt {
+  text-decoration: none;
+  font-size: var(--h2);
+  width: 8em;
+  height: 1.5em;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+  transition: all 0.5s;
+  border-radius: 0.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.signupbutt:hover {
+  background-color: var(--pastelGreen);
+}
+
+.loghov:hover {
+  background-color: var(--blue);
+}
+
+.signhov:hover {
+  background-color: var(--blue);
 }
 
 </style>
