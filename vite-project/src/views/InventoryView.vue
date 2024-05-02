@@ -2,7 +2,7 @@
 
   <Transition name="itemCard">
       <div v-if="showItemCard" class="itemCardBackground">
-        <InventoryCard :item="currentItem"/>
+        <InventoryCard :item="currentItem" @close="showItemCard = false" />
       </div>
     </Transition>
   
@@ -256,6 +256,7 @@ async function getData (): Promise<ApiData[]> {
   text-align: center;
   gap: 2em;
   border-radius: 3em;
+  transition: transform 1s;
 }
 .inventoryItem h2 {
     margin: 0;
@@ -268,6 +269,9 @@ async function getData (): Promise<ApiData[]> {
 .inventoryItem img {
   max-width: 60%;
   max-height: 60%;
+}
+.inventoryItem:hover {
+  transform: scale(1.05);
 }
 
 .common {
