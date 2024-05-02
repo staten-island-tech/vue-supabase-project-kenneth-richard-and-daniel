@@ -10,15 +10,15 @@
     </div>
   
     <form @submit.prevent="handleLogin" v-if="login">
-      <input required type="email" placeholder="Your email" v-model="email" />
-      <input required type="text" placeholder="Your password" v-model="password" />
-      <input class = "loginbutt" type="submit" :value="loading ? 'Loading' : 'Log in'" :disabled="loading" />
+      <input class="log" required type="email" placeholder="Your email" v-model="email" />
+      <input class="logpass" required type="password" placeholder="Your password" v-model="password" />
+      <input class="loginbutt" type="submit" :value="loading ? 'Loading' : 'Log in'" :disabled="loading" />
     </form>
 
     <form @submit.prevent="handleSignup" v-else>
-      <input required type="email" placeholder="Your email" v-model="email" />
-      <input required type="text" placeholder="Your password" v-model="password" />
-      <input class = "signupbutt" type="submit" :value="loading ? 'Loading' : 'Sign up'" :disabled="loading" />
+      <input class="sign" required type="email" placeholder="Your email" v-model="email" />
+      <input class="signpass" required type="password" placeholder="Your password" v-model="password" />
+      <input class="signupbutt" type="submit" :value="loading ? 'Loading' : 'Sign up'" :disabled="loading" />
     </form>
 
   </div>
@@ -153,14 +153,29 @@ const handleSignup = async () => {
 
 .signupbutt:hover {
   background-color: var(--pastelGreen);
+  align-self: center;
 }
 
-.loghov:hover {
+.loghov:hover, .signhov:hover {
   background-color: var(--blue);
+  align-self: center;
 }
 
-.signhov:hover {
-  background-color: var(--blue);
+.log, .sign {
+  padding: 10px; 
+  border: none; 
+  margin: 1em;
 }
+
+.logpass, .signpass {
+  padding: 10px; 
+  border: none;
+  margin: 1em;
+}
+
+.log:active, .sign:active, .logpass:active, .signpass:active{
+  background-color: var(--lightBlue); 
+}
+
 
 </style>
