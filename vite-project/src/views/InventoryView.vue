@@ -1,22 +1,34 @@
 <template>
-    <div class="sort" v-if="session && session.access_token != ''">
-        <button @click="sortInventory('date')" class="sortButton" :class="{ enabled: sortOption == 'date' }">Sort by Date</button>
-        <button @click="sortInventory('rarity')" class="sortButton" :class="{ enabled: sortOption == 'rarity' }">Sort by Rarity</button>
-        <button @click="sortInventory('count')" class="sortButton" :class="{ enabled: sortOption == 'count' }">Sort by Count</button>
-    </div>
-    <div v-if="session && session.access_token != ''" class="inventory">
-        <div v-for="item in inventory" class="inventoryItem" :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare', epic: item.rarity == 'Epic', legendary : item.rarity == 'Legendary', godly: item.rarity == 'Godly' }">
-            <h2>{{ item.displayName }}</h2>
-            <img :src="item.displayIcon" alt="">
-            <h3>x{{ item.inventoryCount }}</h3>
-        </div>
 
-        <div v-if="inventory.length == 0" class="wompwomp">
-            <h2>You don't have any items. L Bozo</h2>
-            <h3>Open some boxes to get started! :D</h3>
-        </div>
-    </div>
-    <LoginAuth v-else/>
+  <Transition name="itemCard">
+      <div v-if="showItemCard" class="itemCardBackground">
+        <InventoryCard :item="currentItem"/>
+      </div>
+    </Transition>
+  
+  <div class="sort" v-if="session && session.access_token != ''">
+      <button @click="sortInventory('date')" class="sortButton" :class="{ enabled: sortOption == 'date' }">Sort by Date</button>
+      <button @click="sortInventory('rarity')" class="sortButton" :class="{ enabled: sortOption == 'rarity' }">Sort by Rarity</button>
+      <button @click="sortInventory('count')" class="sortButton" :class="{ enabled: sortOption == 'count' }">Sort by Count</button>
+  </div>
+
+  <div v-if="session && session.access_token != ''" class="inventory">
+      <div v-for="item in inventory" class="inventoryItem"
+      :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare', epic: item.rarity == 'Epic',
+      legendary : item.rarity == 'Legendary', godly: item.rarity == 'Godly' }"
+      @click="sendItemToCard(item)">
+          <h2>{{ item.displayName }}</h2>
+          <img :src="item.displayIcon" alt="">
+          <h3>x{{ item.inventoryCount }}</h3>
+      </div>
+
+      <div v-if="inventory.length == 0" class="wompwomp">
+          <h2>You don't have any items. L Bozo</h2>
+          <h3>Open some boxes to get started! :D</h3>
+      </div>
+  </div>
+  <LoginAuth v-else/>
+
 </template>
 
 <script setup lang="ts">
@@ -28,6 +40,7 @@ import { getSkins } from '@/stores/lootboxes';
 import type { Inventory, NewWeapon, WeaponSkin } from '@/assets/types';
 import { clientStore } from '@/stores/client';
 import LoginAuth from '@/components/LoginAuth.vue';
+import InventoryCard from '@/components/InventoryCard.vue';
 
 type ApiData = {
     id: string;
@@ -38,6 +51,18 @@ const session = ref<any> ();
 const loaded = ref<boolean> (false);
 const inventory = ref<Inventory> ([]);
 const sortOption = ref<string> ("date");
+const showItemCard = ref<boolean> (false);
+const currentItem = ref<WeaponSkin> ({
+  defaultName: "",
+  category: "",
+  displayIcon: "",
+  displayName: "",
+  levelsCount: 0,
+  wallpaper: "",
+  rarity: "",
+  inventoryCount: 0
+});
+
 let originalInventory: Inventory = [];
 
 watch(() => sessionStore().session, (newSession) => {
@@ -51,6 +76,11 @@ onMounted(async () => {
     sortOption.value = clientStore().sort;
     getInventory();
 });
+
+function sendItemToCard (item: WeaponSkin): void {
+  currentItem.value = item;
+  showItemCard.value = true;
+}
 
 function sortInventory (sortBy: "rarity" | "count" | "date"): void {
     clientStore().sort = sortBy;
@@ -123,6 +153,49 @@ async function getData (): Promise<ApiData[]> {
 </script>
 
 <style scoped>
+
+.itemCardBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  z-index: 99999999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.itemCard-enter-active, .itemCard-leave-active {
+  transition: all 0.5s ease-in-out;
+}
+
+.itemCard-leave-active {
+  transition-delay: 0.15s;
+}
+
+.itemCard-enter-from,
+.itemCard-leave-to {
+  opacity: 0;
+}
+
+.itemCard-enter-active .itemCardMenu,
+.itemCard-leave-active .itemCardMenu { 
+  transition: all 0.25s ease-in-out;
+}
+
+.itemCard-enter-active .itemCardMenu {
+  transition-delay: 0.15s;
+}
+
+.itemCard-enter-from .itemCardMenu,
+.itemCard-leave-to .itemCardMenu {
+  transform: scale(1.05);
+  opacity: 0.001;
+}
 
 .wompwomp {
   background-color: #ff5050;
