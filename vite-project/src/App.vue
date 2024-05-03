@@ -311,11 +311,11 @@ header {
   filter: grayscale(0);
 }
 
-.trade {
+.searcher {
   background-color: var(--deepGreen);
   border-radius: 3em;
 }
-.trade:hover {
+.searcher:hover {
   filter: grayscale(0);
 }
 
