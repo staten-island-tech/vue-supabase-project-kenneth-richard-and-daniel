@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="renameThisLaterOrDeleteIDK">
         <div id="trade-box">
             <h3>Trade Requests Avaliable</h3>
         </div>
@@ -26,6 +26,12 @@ function makeappear(){
 </script>
 
 <style scoped>
+
+.renameThisLaterOrDeleteIDK {
+    margin-top: 19em;
+    /* remember to put the margin-top 19em in whatever ur highest element is gonna be */
+}
+
 #woah {
     margin-top: 14em;
     background-color: rgb(6, 146, 99);
