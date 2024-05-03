@@ -1,5 +1,4 @@
 <template>
-
   <Transition name="unlock">
     <div v-if="finished" class="unlockBackground">
       <div class="unlockMenu"  :class="{ common: outcome.rarity == 'Common', rare: outcome.rarity == 'Rare', epic: outcome.rarity == 'Epic', legendary : outcome.rarity == 'Legendary', godly: outcome.rarity == 'Godly' }">

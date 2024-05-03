@@ -3,13 +3,23 @@
         <div id="trade-box">
             <h3>Trade Requests Avaliable</h3>
         </div>
-        <div class="tings" v-if="clicked">
-            <label for="bombaclad">Select Weapon Your Trading</label>
-            <input type="text" id="bombaclad">
-        </div>
-        <div class="button">
-            <button class="create" @click="makeappear">Create a Trade Request</button>
-        </div>
+        <Transition name="create">
+            <div class="createBackground" v-if="clicked">
+                <label for="bombaclad" id="bombaclad">Select Weapon You're Trading</label>
+                <input type="text" id="bombaclad2" v-model="filled"><br>
+                <img src="/tradeTwo.svg" alt="arrow" id="arrow2">
+                <label for="bombaclad" id="bombaclad">Select Weapon You Want</label>
+                <input type="text" id="bombaclad2" v-model="filled2"><br> 
+                <div class="buttonArray">
+                    <button id="publish" @click="create">Publish</button>
+                    <button id="exit" @click="exitOut">Quit</button>
+                </div>
+            </div>
+
+        </Transition>
+            <div class="button">
+                <button class="create" @click="makeappear">Create a Trade Request</button>
+            </div>
     </div>
 </template>
 
@@ -18,17 +28,124 @@
 import { ref } from 'vue';
 
 const clicked = ref(false);
+const filled = ref("");
+const filled2 = ref("");
 
 function makeappear(){
  clicked.value = true;
 }
 
+function exitOut(){
+    clicked.value = false;
+}
+
+function create() {
+    if (!filled.value && !filled2.value) {
+        return;
+    }
+}
+
 </script>
 
 <style scoped>
-#woah {
-    margin-top: 14em;
+#exit {
+
+}
+
+#arrow2 {
+    width: 8em;
+    height: 8em;
+}
+
+#bombaclad, #bombaclad2{
+    color: red;
+    font-size: 4em;
+}
+
+#trade-box {
+    margin-top: 17em;
     background-color: rgb(6, 146, 99);
     border-radius: 15px;
+}
+
+.createBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  z-index: 99999999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.createMenu {
+  min-width: 75em;
+  max-width: 125em;
+  padding: 20px;
+  border-radius: 3vh;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  max-height: 80%;
+  min-height: 30%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: black;
+}
+
+.createImg {
+  max-width: 40%;
+}
+.createImgBig {
+  max-width: 90%;
+  min-width: 70%;
+}
+
+.create-enter-active, .create-leave-active {
+  transition: all 0.5s ease-in-out;
+}
+
+.create-leave-active {
+  transition-delay: 0.15s;
+}
+
+.create-enter-from,
+.create-leave-to {
+  opacity: 0;
+}
+
+.create-enter-active .createMenu,
+.create-leave-active .createMenu { 
+  transition: all 0.25s ease-in-out;
+}
+
+.create-enter-active .createMenu {
+  transition-delay: 0.15s;
+}
+
+.create-enter-from .createMenu,
+.create-leave-to .createMenu {
+  transform: scale(1.05);
+  opacity: 0.001;
+}
+
+.createText {
+  position: absolute;
+  display: none;
+  margin: 0;
+}
+
+ .createText:hover {
+  display: block;
+}
+
+.creatingText {
+  position: absolute;
+  margin: 0;
 }
 </style>
