@@ -5,21 +5,23 @@
       <h2>(IS underage gambling *Pls don't sue us*)</h2>
       <h3>"90% of gamblers quit before they hit it big!"</h3>
       <h3>- a really smart dude</h3>
-      <h3>"90% of gamblers quit before they hit it big!"</h3>
-      <h3>- a really smart dude</h3>
+      <h3>"There are only winners and quitters!"</h3>
+      <h3>- another really smart dude</h3>
     </div>
   
-    <form @submit.prevent="handleLogin" v-if="login">
-      <input class="log" required type="email" placeholder="Your email" v-model="email" />
-      <input class="logpass" required type="password" placeholder="Your password" v-model="password" />
-      <input class="loginbutt" type="submit" :value="loading ? 'Loading' : 'Log in'" :disabled="loading" />
-    </form>
-
-    <form @submit.prevent="handleSignup" v-else>
-      <input class="sign" required type="email" placeholder="Your email" v-model="email" />
-      <input class="signpass" required type="password" placeholder="Your password" v-model="password" />
-      <input class="signupbutt" type="submit" :value="loading ? 'Loading' : 'Sign up'" :disabled="loading" />
-    </form>
+    <div>
+      <form @submit.prevent="handleLogin" v-if="login">
+        <input class="log" required type="email" placeholder="Your email" v-model="email" />
+        <input class="logpass" required type="password" placeholder="Your password" v-model="password" />
+        <input id="loginbutt" type="submit" :value="loading ? 'Loading' : 'Log in'" :disabled="loading" />
+      </form>
+  
+      <form @submit.prevent="handleSignup" v-else>
+        <input class="sign" required type="email" placeholder="Your email" v-model="email" />
+        <input class="signpass" required type="password" placeholder="Your password" v-model="password" />
+        <input id="signupbutt" type="submit" :value="loading ? 'Loading' : 'Sign up'" :disabled="loading" />
+      </form>
+    </div>
 
   </div>
 
@@ -118,7 +120,7 @@ async function handleSignup () {
   margin: 0;
 }
 
-.loginbutt {
+#loginbutt, #signupbutt {
   text-decoration: none;
   font-size: var(--h2);
   width: 8em;
@@ -128,43 +130,25 @@ async function handleSignup () {
   overflow: hidden;
   transition: all 0.5s;
   border-radius: 0.5em;
-  display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  border: 3px solid lightblue;
 }
 
-.loginbutt:hover {
+#loginbutt:hover, #signupbutt:hover {
   background-color: var(--lightBlue);
-}
-
-.signupbutt {
-  text-decoration: none;
-  font-size: var(--h2);
-  width: 8em;
-  height: 1.5em;
-  padding-top: 0.25em;
-  padding-bottom: 0.25em;
-  transition: all 0.5s;
-  border-radius: 0.5em;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.signupbutt:hover {
-  background-color: var(--pastelGreen);
-  align-self: center;
 }
 
 .loghov:hover, .signhov:hover {
   background-color: var(--blue);
-  align-self: center;
 }
 
-.log, .sign {
-  padding: 10px; 
+.log, .logpass, .sign, .signpass {
+  padding: 10px 15px;
   border: none; 
   margin: 1em;
+  color: blue;
+  border-radius: 25px;
 }
 
 .logpass, .signpass {
@@ -177,5 +161,9 @@ async function handleSignup () {
   background-color: var(--lightBlue); 
 }
 
+form {
+  margin: 0 auto;
+  width:250px;
+}
 
 </style>
