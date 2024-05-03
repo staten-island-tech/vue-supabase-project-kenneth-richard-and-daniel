@@ -11,9 +11,14 @@ export const clientStore = defineStore("client", () => {
     currentPity.value = newPity;
   }
 
+  function changeInventory (newInventory: Inventory) {
+    currentInventory.value = newInventory;
+  }
+
   const fastSpin = ref<boolean> (false);
   const sort = ref<"rarity" | "count" | "date"> ("date");
+  const reversed = ref<boolean> (false);
 
-  return { currentInventory, currentPity, currentWeapons, changePity, fastSpin, sort }
+  return { currentInventory, currentPity, currentWeapons, changePity, changeInventory, fastSpin, sort, reversed }
   
 });

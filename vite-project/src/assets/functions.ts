@@ -8,3 +8,13 @@ export function getRandomIntInclusive (min: number, max: number): number {
     const maxFloored: number = Math.floor(max);
     return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
+
+export function formatDate (date: string): string {
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    const month = date[5] == "0" ? date[6] : date[5] + date[6];
+    const day = date[8] == "0" ? date[9] : date[8] + date[9];
+    const year = date[0] + date[1] + date[2] + date[3];
+    
+    return `${months[Number(month) - 1]} ${day}, ${year}`;
+}

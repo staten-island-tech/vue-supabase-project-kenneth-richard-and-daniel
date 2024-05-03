@@ -2,7 +2,7 @@
   <div>
     <div class="title">
       <h1>VALORANT Case Opener</h1>
-      <h2>(NOT underage gambling)</h2>
+      <h2>(IS underage gambling *Pls don't sue us*)</h2>
       <h3>"90% of gamblers quit before they hit it big!"</h3>
       <h3>- a really smart dude</h3>
       <h3>"90% of gamblers quit before they hit it big!"</h3>
@@ -39,7 +39,7 @@ const password = ref<string>('');
 const email = ref<string>('');
 const login = ref<boolean>(true);
 
-const handleLogin = async () => {
+async function handleLogin () {
   try {
     loading.value = true;
 
@@ -68,7 +68,7 @@ const handleLogin = async () => {
   }
 }
 
-const handleSignup = async () => {
+async function handleSignup () {
   try {
     loading.value = true;
 

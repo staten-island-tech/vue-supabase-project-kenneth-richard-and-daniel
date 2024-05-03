@@ -16,9 +16,9 @@ const router = createRouter({
       name: 'inventory',
       component: () => import('../views/InventoryView.vue')
     }, {
-      path: '/acc-search',
-      name: 'acc-search',
-      component: () => import('../views/AccSearch.vue')
+      path: '/trade-search',
+      name: 'trade-search',
+      component: () => import('../views/TradeSearch.vue')
     }
   ]
 })

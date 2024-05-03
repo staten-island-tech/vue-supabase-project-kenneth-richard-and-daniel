@@ -9,17 +9,17 @@
         </div>
       </div>
       <nav class="navBar">
-        <RouterLink to="/" class="lootboxes" :class="{ enabled: route.path == '/' }">
+        <RouterLink to="/" class="lootboxes" :class="{ enabled: route.path == '/', disabled: email == '' }">
           <img src="/chest.svg" alt="Lootboxes">
           <h3>Lootboxes</h3>
         </RouterLink>
-        <RouterLink to="/inventory" class="inventoryButton" :class="{ enabled: route.path == '/inventory' }">
+        <RouterLink to="/inventory" class="inventoryButton" :class="{ enabled: route.path == '/inventory', disabled: email == '' }">
           <img src="/backpack.svg" alt="Inventory">
           <h3>Inventory</h3>
         </RouterLink>
-        <RouterLink to="/acc-search" class="searcher" :class="{ enabled: route.path == '/acc-search'}">
+        <RouterLink to="/trade-search" class="searcher" :class="{ enabled: route.path == '/trade-search', disabled: email == '' }">
           <img src="/magnify.svg" alt="Searcher">
-          <h3>Searcher</h3>
+          <h3>Trade</h3>
         </RouterLink>
       </nav>
     </div>
@@ -94,6 +94,10 @@ function logout (): void {
 </script>
 
 <style scoped>
+
+.disabled {
+  cursor: not-allowed;
+}
 
 .signoutBackground {
   position: fixed;
@@ -307,11 +311,11 @@ header {
   filter: grayscale(0);
 }
 
-.searcher {
+.trade {
   background-color: var(--deepGreen);
   border-radius: 3em;
 }
-.searcher:hover {
+.trade:hover {
   filter: grayscale(0);
 }
 
