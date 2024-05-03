@@ -82,6 +82,7 @@ async function getSkins (): Promise<NewWeapon[]> {
                     wallpaper: skin.wallpaper,
                     rarity: skinRarity,
                     inventoryCount: 1,
+                    date: "",
                 };
                 obj.skins.push(skinObj);
             }

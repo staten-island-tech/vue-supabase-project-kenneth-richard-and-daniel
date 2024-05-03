@@ -7,6 +7,10 @@
     </Transition>
   
   <div class="sort" v-if="session && session.access_token != ''">
+      <button class="reverseButton" @click="reverseInventory">
+        <img src="/arrowSortBottom.svg" alt="Click to reverse the inventory filter" :class="{ reversed: sortReverse == true }">
+      </button>
+
       <button @click="sortInventory('date')" class="sortButton" :class="{ enabled: sortOption == 'date' }">Sort by Date</button>
       <button @click="sortInventory('rarity')" class="sortButton" :class="{ enabled: sortOption == 'rarity' }">Sort by Rarity</button>
       <button @click="sortInventory('count')" class="sortButton" :class="{ enabled: sortOption == 'count' }">Sort by Count</button>
@@ -18,7 +22,7 @@
       legendary : item.rarity == 'Legendary', godly: item.rarity == 'Godly' }"
       @click="sendItemToCard(item)">
           <h2>{{ item.displayName }}</h2>
-          <img :src="item.displayIcon" alt="">
+          <img :src="item.displayIcon" :alt="item.displayName">
           <h3>x{{ item.inventoryCount }}</h3>
       </div>
 
@@ -27,6 +31,7 @@
           <h3>Open some boxes to get started! :D</h3>
       </div>
   </div>
+
   <LoginAuth v-else/>
 
 </template>
@@ -43,8 +48,10 @@ import LoginAuth from '@/components/LoginAuth.vue';
 import InventoryCard from '@/components/InventoryCard.vue';
 
 type ApiData = {
+    skin_id: number;
     id: string;
     skin_name: string;
+    date: string;
 }
 
 const session = ref<any> ();
@@ -52,6 +59,7 @@ const loaded = ref<boolean> (false);
 const inventory = ref<Inventory> ([]);
 const sortOption = ref<string> ("date");
 const showItemCard = ref<boolean> (false);
+const sortReverse = ref<boolean> (false);
 const currentItem = ref<WeaponSkin> ({
   defaultName: "",
   category: "",
@@ -60,22 +68,29 @@ const currentItem = ref<WeaponSkin> ({
   levelsCount: 0,
   wallpaper: "",
   rarity: "",
-  inventoryCount: 0
+  inventoryCount: 0,
+  date: ""
 });
 
 let originalInventory: Inventory = [];
 
-watch(() => sessionStore().session, (newSession) => {
-  session.value = newSession;
-});
+watch(() => sessionStore().session, (newSession) => session.value = newSession);
+watch(() => clientStore().currentInventory, (newInventory) => inventory.value = newInventory);
 
 onMounted(async () => {
     session.value = sessionStore().session;
     loaded.value = false;
     inventory.value = clientStore().currentInventory;
     sortOption.value = clientStore().sort;
+    sortReverse.value = clientStore().reversed;
     getInventory();
 });
+
+function reverseInventory (): void {
+  inventory.value = [...inventory.value].reverse();
+  clientStore().reversed = !sortReverse.value;
+  sortReverse.value = !sortReverse.value;
+}
 
 function sendItemToCard (item: WeaponSkin): void {
   currentItem.value = item;
@@ -88,16 +103,16 @@ function sortInventory (sortBy: "rarity" | "count" | "date"): void {
 
     if (sortBy == "rarity") {
         const newInventory: Inventory = [];
-        newInventory.push(...originalInventory.filter((item) => item.rarity == "Godly"));
-        newInventory.push(...originalInventory.filter((item) => item.rarity == "Legendary"));
-        newInventory.push(...originalInventory.filter((item) => item.rarity == "Epic"));
-        newInventory.push(...originalInventory.filter((item) => item.rarity == "Rare"));
         newInventory.push(...originalInventory.filter((item) => item.rarity == "Common"));
-        inventory.value = newInventory;
+        newInventory.push(...originalInventory.filter((item) => item.rarity == "Rare"));
+        newInventory.push(...originalInventory.filter((item) => item.rarity == "Epic"));
+        newInventory.push(...originalInventory.filter((item) => item.rarity == "Legendary"));
+        newInventory.push(...originalInventory.filter((item) => item.rarity == "Godly"));
+        inventory.value = sortReverse.value == true ? [...newInventory].reverse() : newInventory;
     } else if (sortBy == "count") {
-        inventory.value = [...originalInventory].sort((a, b) => b.inventoryCount - a.inventoryCount);
+        inventory.value = sortReverse.value == true ? [...originalInventory].sort((a, b) => a.inventoryCount - b.inventoryCount).reverse() : [...originalInventory].sort((a, b) => a.inventoryCount - b.inventoryCount);
     } else if (sortBy == "date") {
-        inventory.value = [...originalInventory];
+        inventory.value = sortReverse.value == true ? [...originalInventory].reverse() : [...originalInventory];
     }
 
     clientStore().currentInventory = inventory.value;
@@ -112,16 +127,23 @@ async function getInventory (): Promise<void> {
     const combinedSkins: WeaponSkin[] = emptyArray.concat(...allSkins);
     
     const inventorySkins = inventoryUser.map((item) => item.skin_name);
-    
+
     const inventoryTranslated: Inventory = [];
+
     for (let skin of inventorySkins) {
         const found: WeaponSkin | undefined = combinedSkins.find((item) => skin == item.displayName);
+
         if (found && inventoryTranslated.includes(found)) {
-            found.inventoryCount++;
+          found.inventoryCount++;
+
         } else if (found) {
-            inventoryTranslated.push(found);
+          const foundInInventory = inventoryUser.find((item) => item.skin_name == found.displayName);
+          if (foundInInventory) found.date = foundInInventory.date;
+
+          inventoryTranslated.push(found);
         }
     }
+    
     originalInventory = inventoryTranslated;
     sortInventory(clientStore().sort);
 
@@ -132,14 +154,16 @@ async function getInventory (): Promise<void> {
 
 async function getData (): Promise<ApiData[]> {
     let apiData: ApiData[] = [{
+        skin_id: 0,
         id: "",
-        skin_name: ""
+        skin_name: "",
+        date: ""
     }];
     try {
         const { data, error } = await supabase.from('inventory').select()
         if (error) throw error;
 
-        apiData = data.filter((item) => item.id == sessionStore().session.id);
+        apiData = data.filter((user) => user.id == sessionStore().session.id);
 
     } catch (error) {
         if (error instanceof Error) {
@@ -215,6 +239,32 @@ async function getData (): Promise<ApiData[]> {
   justify-content: center;
   align-items: center;
   gap: 5%;
+}
+
+.reverseButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 6em;
+  height: 5em;
+  border-radius: 2.5em;
+  overflow: hidden;
+  background-color: var(--pastelYellow);
+  transition: all 0.5s;
+}
+.reverseButton img {
+  width: 3.5em;
+  height: 3.5em;
+  transition: all 0.5s;
+}
+.reverseButton:hover {
+  transform: scale(1.1);
+}
+.reverseButton:hover img {
+  transform: rotate(180deg);
+}
+.reversed {
+  transform: rotate(180deg);
 }
 
 .sortButton {
