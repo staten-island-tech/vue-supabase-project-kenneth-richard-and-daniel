@@ -37,7 +37,7 @@ const password = ref<string>('');
 const email = ref<string>('');
 const login = ref<boolean>(true);
 
-const handleLogin = async () => {
+async function handleLogin () {
   try {
     loading.value = true;
 
@@ -66,7 +66,7 @@ const handleLogin = async () => {
   }
 }
 
-const handleSignup = async () => {
+async function handleSignup () {
   try {
     loading.value = true;
 

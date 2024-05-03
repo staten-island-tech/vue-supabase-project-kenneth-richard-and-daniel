@@ -89,6 +89,7 @@ export type WeaponSkin = {
     wallpaper: string | null;
     rarity: string;
     inventoryCount: number;
+    date: string;
 }
 
 export type SessionData = {
@@ -100,14 +101,4 @@ export type SessionData = {
     email: string | undefined;
 }
 
-export type UserProfile = {
-    id: string;
-    boxes_since_last: number;
-}
-
 export type Inventory = WeaponSkin[];
-
-export type ClientStore = {
-    currentInventory: Inventory;
-    currentPity: number;
-}
