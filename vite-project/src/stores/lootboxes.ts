@@ -81,7 +81,7 @@ async function getSkins (): Promise<NewWeapon[]> {
                     levelsCount: skin.levels.length,
                     wallpaper: skin.wallpaper,
                     rarity: skinRarity,
-                    inventoryCount: 1,
+                    inventoryCount: 0,
                     date: "",
                 };
                 obj.skins.push(skinObj);

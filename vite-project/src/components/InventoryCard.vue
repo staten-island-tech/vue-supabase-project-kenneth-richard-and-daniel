@@ -29,10 +29,11 @@
       <h1 class="title">{{ item.displayName }}</h1>
       <h3 class="title">{{ item.rarity }} {{ item.defaultName }}</h3>
       <img :src="item.displayIcon" :alt="item.displayName" :class="{ unlockImg: item.category == 'Pistols' || item.category == null, unlockImgBig: item.category != 'Pistols' && item.category != null }">
-      <h3 class="description">First unlocked: <span>{{ formatDate(item.date) }}</span></h3>
-      <h3 class="description">You have: <span>{{ item.inventoryCount }}</span></h3>
+      <h3 class="description" v-if="item.inventoryCount != 0">First unlocked: <span>{{ formatDate(item.date) }}</span></h3>
+      <h3 class="description" v-else>You have not unlocked this item yet!</h3>
+      <h3 class="description" v-if="item.inventoryCount != 0">You have: <span>{{ item.inventoryCount }}</span></h3>
       <div class="buttonArray">
-        <button class="finishedButton deleteButton" @click="deleteMenu = true">
+        <button class="finishedButton deleteButton" @click="openDeleteMenu" :class="{ disabledDelete: item.inventoryCount == 0 }">
           <img src="/trash.svg" alt="Click to delete all of this item">
           <h3>Delete All</h3>
         </button>
@@ -61,6 +62,10 @@ const props = defineProps<Props> ();
 const deleteMenu = ref<boolean> (false);
 
 const emit = defineEmits(["close"]);
+
+function openDeleteMenu (): void {
+  if (props.item.inventoryCount != 0) deleteMenu.value = true;
+}
 
 function closeCard (): void {
   emit("close");
@@ -317,6 +322,13 @@ async function deleteItem (item: WeaponSkin): Promise<void> {
 
 .finishedButton:hover {
   filter: grayscale(0);
+}
+
+.disabledDelete {
+  filter: grayscale(1);
+}
+.disabledDelete:hover {
+  filter: grayscale(1);
 }
 
 </style>

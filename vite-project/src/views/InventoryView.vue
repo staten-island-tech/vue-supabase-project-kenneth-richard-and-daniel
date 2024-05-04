@@ -10,19 +10,29 @@
       <button class="reverseButton" @click="reverseInventory">
         <img src="/arrowSortBottom.svg" alt="Click to reverse the inventory filter" :class="{ reversed: sortReverse == true }">
       </button>
+      
+      <button class="hideButton" @click="showLocked" :class="{ notHidden: !showLockedBool }">
+        <img src="/hide.svg" alt="Click to show undiscovered skins" v-if="!showLockedBool">
+        <img src="/show.svg" alt="Click to hide undiscovered skins" v-if="showLockedBool">
+      </button>
 
       <button @click="sortInventory('date')" class="sortButton" :class="{ enabled: sortOption == 'date' }">Sort by Date</button>
       <button @click="sortInventory('rarity')" class="sortButton" :class="{ enabled: sortOption == 'rarity' }">Sort by Rarity</button>
-      <button @click="sortInventory('count')" class="sortButton" :class="{ enabled: sortOption == 'count' }">Sort by Count</button>
+      <button @click="sortInventory('weapon')" class="sortButton" :class="{ enabled: sortOption == 'weapon' }">Sort by Weapon</button>
+  </div>
+
+  <div class="search">
+    <h3>Search</h3>
+    <input type="text" placeholder="Type to narrow search" @input="searchInventory">
   </div>
 
   <div v-if="session && session.access_token != ''" class="inventory">
       <div v-for="item in inventory" class="inventoryItem"
       :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare', epic: item.rarity == 'Epic',
-      legendary : item.rarity == 'Legendary', godly: item.rarity == 'Godly' }"
+      legendary : item.rarity == 'Legendary', godly: item.rarity == 'Godly', lockedItem: item.inventoryCount == 0 }"
       @click="sendItemToCard(item)">
           <h2>{{ item.displayName }}</h2>
-          <img :src="item.displayIcon" :alt="item.displayName">
+          <img class="inventoryItemImg" :src="item.displayIcon" :alt="item.displayName" :class="{ karambit: ['Karambit', 'Blade', 'Imperium', 'Quo'].includes(item.displayName.split(' ')[item.displayName.split(' ').length - 1]) }">
           <h3>x{{ item.inventoryCount }}</h3>
       </div>
 
@@ -60,6 +70,7 @@ const inventory = ref<Inventory> ([]);
 const sortOption = ref<string> ("date");
 const showItemCard = ref<boolean> (false);
 const sortReverse = ref<boolean> (false);
+const showLockedBool = ref<boolean> (false);
 const currentItem = ref<WeaponSkin> ({
   defaultName: "",
   category: "",
@@ -71,11 +82,14 @@ const currentItem = ref<WeaponSkin> ({
   inventoryCount: 0,
   date: ""
 });
+const searchParam = ref<string> ("");
 
 let originalInventory: Inventory = [];
+let mutatedInventory: Inventory = [];
 
 watch(() => sessionStore().session, (newSession) => session.value = newSession);
 watch(() => clientStore().currentInventory, (newInventory) => inventory.value = newInventory);
+watch(() => clientStore().hidden, () => getInventory());
 
 onMounted(async () => {
     session.value = sessionStore().session;
@@ -83,8 +97,15 @@ onMounted(async () => {
     inventory.value = clientStore().currentInventory;
     sortOption.value = clientStore().sort;
     sortReverse.value = clientStore().reversed;
+    showLockedBool.value = clientStore().hidden;
     getInventory();
 });
+
+function searchInventory (event: Event): void {
+  const inputValue = (event.target as HTMLInputElement).value;
+  searchParam.value = inputValue;
+  inventory.value = mutatedInventory.filter((item) => item.displayName.toLowerCase().includes(inputValue.toLowerCase()));
+}
 
 function reverseInventory (): void {
   inventory.value = [...inventory.value].reverse();
@@ -92,29 +113,44 @@ function reverseInventory (): void {
   sortReverse.value = !sortReverse.value;
 }
 
+function showLocked (): void {
+  clientStore().changeHidden();
+  showLockedBool.value = !showLockedBool.value;
+}
+
 function sendItemToCard (item: WeaponSkin): void {
   currentItem.value = item;
   showItemCard.value = true;
 }
 
-function sortInventory (sortBy: "rarity" | "count" | "date"): void {
+async function sortInventory (sortBy: "rarity" | "weapon" | "date"): Promise<void> {
     clientStore().sort = sortBy;
     sortOption.value = sortBy;
 
+    const newInventory: Inventory = [];
+
     if (sortBy == "rarity") {
-        const newInventory: Inventory = [];
         newInventory.push(...originalInventory.filter((item) => item.rarity == "Common"));
         newInventory.push(...originalInventory.filter((item) => item.rarity == "Rare"));
         newInventory.push(...originalInventory.filter((item) => item.rarity == "Epic"));
         newInventory.push(...originalInventory.filter((item) => item.rarity == "Legendary"));
         newInventory.push(...originalInventory.filter((item) => item.rarity == "Godly"));
         inventory.value = sortReverse.value == true ? [...newInventory].reverse() : newInventory;
-    } else if (sortBy == "count") {
-        inventory.value = sortReverse.value == true ? [...originalInventory].sort((a, b) => a.inventoryCount - b.inventoryCount).reverse() : [...originalInventory].sort((a, b) => a.inventoryCount - b.inventoryCount);
+
+    } else if (sortBy == "weapon") {
+      for (let weapon of await getSkins()) newInventory.push(...originalInventory.filter((item) => item.defaultName == weapon.displayName));
+      inventory.value = sortReverse.value == true ? [...newInventory].reverse() : newInventory;
+
     } else if (sortBy == "date") {
-        inventory.value = sortReverse.value == true ? [...originalInventory].reverse() : [...originalInventory];
+      for (let item of [...originalInventory].filter((item) => item.date)) {
+        newInventory.push(item);
+      }
+      newInventory.push(...originalInventory.filter((item) => !item.date));
+      inventory.value = sortReverse.value == true ? [...newInventory].reverse() : [...newInventory];
     }
 
+    mutatedInventory = inventory.value;
+    inventory.value = mutatedInventory.filter((item) => item.displayName.toLowerCase().includes(searchParam.value.toLowerCase()));
     clientStore().currentInventory = inventory.value;
 }
 
@@ -133,18 +169,19 @@ async function getInventory (): Promise<void> {
     for (let skin of inventorySkins) {
         const found: WeaponSkin | undefined = combinedSkins.find((item) => skin == item.displayName);
 
-        if (found && inventoryTranslated.includes(found)) {
-          found.inventoryCount++;
-
-        } else if (found) {
-          const foundInInventory = inventoryUser.find((item) => item.skin_name == found.displayName);
-          if (foundInInventory) found.date = foundInInventory.date;
+        if (found) {
+          const foundInInventory: ApiData | undefined = inventoryUser.find((item) => item.skin_name == found.displayName);
+          if (foundInInventory) {
+            found.inventoryCount++;
+            found.date = foundInInventory.date;
+          } 
 
           inventoryTranslated.push(found);
         }
     }
     
-    originalInventory = inventoryTranslated;
+    const remainingSkins = combinedSkins.filter((item) => inventoryUser.find((inventoryItem) => inventoryItem.skin_name == item.displayName)?.skin_name != (item.displayName))
+    originalInventory = showLockedBool.value == true ? inventoryTranslated.concat(remainingSkins) : inventoryTranslated;
     sortInventory(clientStore().sort);
 
     clientStore().currentInventory = inventory.value;
@@ -233,7 +270,7 @@ async function getData (): Promise<ApiData[]> {
 
 .sort {
   margin-top: 19em;
-  margin-bottom: 4em;
+  margin-bottom: 1em;
   width: 50%;
   display: flex;
   justify-content: center;
@@ -241,23 +278,32 @@ async function getData (): Promise<ApiData[]> {
   gap: 5%;
 }
 
-.reverseButton {
+.reverseButton, .hideButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 6em;
+  width: 6.5em;
   height: 5em;
   border-radius: 2.5em;
   overflow: hidden;
   background-color: var(--pastelYellow);
   transition: all 0.5s;
 }
-.reverseButton img {
+.hideButton {
+  background-color: var(--cyan);
+}
+.notHidden {
+  filter: grayscale(1);
+}
+.lockedItem {
+  filter: grayscale(0.95);
+}
+.reverseButton img, .hideButton img {
   width: 3.5em;
   height: 3.5em;
   transition: all 0.5s;
 }
-.reverseButton:hover {
+.reverseButton:hover, .hideButton:hover {
   transform: scale(1.1);
 }
 .reverseButton:hover img {
@@ -316,9 +362,13 @@ async function getData (): Promise<ApiData[]> {
     margin: 0;
 }
 
-.inventoryItem img {
+.inventoryItemImg {
   max-width: 60%;
   max-height: 60%;
+}
+.karambit {
+  max-width: 40%;
+  max-height: 40%;
 }
 .inventoryItem:hover {
   transform: scale(1.05);
@@ -338,6 +388,39 @@ async function getData (): Promise<ApiData[]> {
 }
 .godly {
   background: var(--godly);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  gap: 5%;
+  margin-bottom: 4em;
+}
+.search h3 {
+  margin: 0;
+  color: white;
+}
+.search input {
+  width: 15em;
+  font-size: 2em;
+  padding: 0.25em;
+  border-radius: 0.8em;
+  color: black;
+  background-color: #cacaca;
+  border-style: solid;
+  text-align: center;
+}
+
+.search input::placeholder {
+  color: black;
+  opacity: 1;
+}
+
+.search input:focus {
+  outline: none;
+  border-color: #ff5050;
 }
 
 </style>

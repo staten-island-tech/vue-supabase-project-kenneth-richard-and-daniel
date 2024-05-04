@@ -7,18 +7,23 @@ export const clientStore = defineStore("client", () => {
   const currentPity = ref<number> (0);
   const currentWeapons = ref<NewWeapon[]>([]);
 
-  function changePity (newPity: number) {
+  function changePity (newPity: number): void {
     currentPity.value = newPity;
   }
 
-  function changeInventory (newInventory: Inventory) {
+  function changeInventory (newInventory: Inventory): void {
     currentInventory.value = newInventory;
   }
 
   const fastSpin = ref<boolean> (false);
-  const sort = ref<"rarity" | "count" | "date"> ("date");
+  const sort = ref<"rarity" | "weapon" | "date"> ("date");
   const reversed = ref<boolean> (false);
+  const hidden = ref<boolean> (false);
 
-  return { currentInventory, currentPity, currentWeapons, changePity, changeInventory, fastSpin, sort, reversed }
+  function changeHidden (): void {
+    hidden.value = !hidden.value;
+  }
+
+  return { currentInventory, currentPity, currentWeapons, changePity, changeInventory, fastSpin, sort, reversed, hidden, changeHidden }
   
 });
