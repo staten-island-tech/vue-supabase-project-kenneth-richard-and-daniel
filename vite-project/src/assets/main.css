@@ -101,3 +101,8 @@ button, a {
   touch-action: manipulation;
   text-decoration: none;
 }
+
+input {
+  font-family: 'Kanit', sans-serif;
+  color: black;
+}

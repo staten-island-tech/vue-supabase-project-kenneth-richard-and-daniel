@@ -5,7 +5,10 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      redirect: '/lootbox'
+    }, {
+      path: '/lootbox',
+      name: 'lootbox',
       component: () => import ('../views/HomeView.vue')
     }, {
       path: '/all-skins',

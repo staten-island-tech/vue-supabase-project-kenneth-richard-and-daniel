@@ -1,15 +1,17 @@
 <template>
-  <header>
+  <header v-if="email != ''">
     <div class="headerDiv">
-      <div class="logo">
-        <img src="/valorant.svg" alt="VALORANT Logo">
-        <div class="logoTitle">
-          <h2>VALORANT Case Opener</h2>
-          <p v-if="email != ''">{{ email }} <button class="account" @click="signout = true"><img src="/exit.svg" alt="Click to sign out of your account"></button></p>
+      <div class="logoBackground">
+        <div class="logo">
+          <img src="/valorant.svg" alt="VALORANT Logo">
+          <div class="logoTitle">
+            <h2>VALORANT Case Opener</h2>
+            <p v-if="email != ''">{{ email }} <button class="account" @click="signout = true"><img src="/exit.svg" alt="Click to sign out of your account"></button></p>
+          </div>
         </div>
       </div>
       <nav class="navBar">
-        <RouterLink to="/" class="lootboxes" :class="{ enabled: route.path == '/', disabled: email == '' }">
+        <RouterLink to="/" class="lootboxes" :class="{ enabled: route.path == '/lootbox', disabled: email == '' }">
           <img src="/chest.svg" alt="Lootboxes">
           <h3>Lootboxes</h3>
         </RouterLink>
@@ -253,6 +255,11 @@ header {
   margin-top: 2em;
 }
 
+.logoBackground {
+  background: linear-gradient(to bottom, #ff5152, #db0000);
+  padding: 0.2em;
+  border-radius: 5em;
+}
 .logo {
   display: flex;
   align-items: center;
@@ -260,9 +267,10 @@ header {
   padding-left: 7.5em;
   padding-right: 7.5em;
   gap: 5%;
-  background-color: rgb(255, 144, 80);
+  background-color: rgba(12, 24, 36, 0.85);
+  color: white;
   border-radius: 5em;
-  height: 100%;
+  height: 10em;
 }
 .logo h2 {
   margin: 0;
