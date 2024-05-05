@@ -24,6 +24,8 @@ export const clientStore = defineStore("client", () => {
     hidden.value = !hidden.value;
   }
 
-  return { currentInventory, currentPity, currentWeapons, changePity, changeInventory, fastSpin, sort, reversed, hidden, changeHidden }
+  const intendedRoute = ref<string> ("");
+
+  return { currentInventory, currentPity, currentWeapons, changePity, changeInventory, fastSpin, sort, reversed, hidden, changeHidden, intendedRoute }
   
 });

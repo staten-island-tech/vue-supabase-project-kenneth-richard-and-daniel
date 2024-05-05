@@ -6,7 +6,7 @@
       </div>
     </Transition>
   
-  <div class="sort" v-if="session && session.access_token != ''">
+  <div class="sort">
       <button class="reverseButton" @click="reverseInventory">
         <img src="/arrowSortBottom.svg" alt="Click to reverse the inventory filter" :class="{ reversed: sortReverse == true }">
       </button>
@@ -26,7 +26,7 @@
     <input type="text" placeholder="Type to narrow search" @input="searchInventory">
   </div>
 
-  <div v-if="session && session.access_token != ''" class="inventory">
+  <div class="inventory">
       <div v-for="item in inventory" class="inventoryItem"
       :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare', epic: item.rarity == 'Epic',
       legendary : item.rarity == 'Legendary', godly: item.rarity == 'Godly', lockedItem: item.inventoryCount == 0 }"
@@ -42,8 +42,6 @@
       </div>
   </div>
 
-  <LoginAuth v-else/>
-
 </template>
 
 <script setup lang="ts">
@@ -54,8 +52,8 @@ import { sessionStore } from '@/stores/session';
 import { getSkins } from '@/stores/lootboxes';
 import type { Inventory, NewWeapon, WeaponSkin } from '@/assets/types';
 import { clientStore } from '@/stores/client';
-import LoginAuth from '@/components/LoginAuth.vue';
 import InventoryCard from '@/components/InventoryCard.vue';
+import { watchLogout } from '@/assets/functions';
 
 type ApiData = {
     skin_id: number;
@@ -64,7 +62,6 @@ type ApiData = {
     date: string;
 }
 
-const session = ref<any> ();
 const loaded = ref<boolean> (false);
 const inventory = ref<Inventory> ([]);
 const sortOption = ref<string> ("date");
@@ -87,12 +84,12 @@ const searchParam = ref<string> ("");
 let originalInventory: Inventory = [];
 let mutatedInventory: Inventory = [];
 
-watch(() => sessionStore().session, (newSession) => session.value = newSession);
+watch(() => sessionStore().session, (newSession) => watchLogout(newSession));
 watch(() => clientStore().currentInventory, (newInventory) => inventory.value = newInventory);
 watch(() => clientStore().hidden, () => getInventory());
 
 onMounted(async () => {
-    session.value = sessionStore().session;
+    watchLogout(sessionStore().session);
     loaded.value = false;
     inventory.value = clientStore().currentInventory;
     sortOption.value = clientStore().sort;

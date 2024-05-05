@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
     <div class="titleDiv">
       <div class="titleBorder">
         <div class="titleBackground">
@@ -14,16 +14,10 @@
     </div>
   
     <div class="logins">
-      <form @submit.prevent="handleLogin" v-if="login">
+      <form @submit.prevent="handleAuth(login ? 'login' : 'signup')">
         <input class="email" required type="email" placeholder="Email" v-model="email" />
         <input class="password" required type="password" placeholder="Password" v-model="password" />
-        <input class="submit" type="submit" :value="'Log in'" />
-      </form>
-  
-      <form @submit.prevent="handleSignup" v-else>
-        <input class="email" required type="email" placeholder="Email" v-model="email" />
-        <input class="password" required type="password" placeholder="Password" v-model="password" />
-        <input class="submit" type="submit" :value="'Sign up'" />
+        <input class="submit" type="submit" :value="login ? 'Log in' : 'Sign up'" />
       </form>
     </div>
 
@@ -42,32 +36,53 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { supabase } from '@/lib/supabaseClient';
 import { sessionStore } from '@/stores/session';
 import { getRandomIntInclusive } from '@/assets/functions';
+import router from '@/router';
+import { clientStore } from '@/stores/client';
 
 const quotes = ["90% of gamblers quit before they hit it big!", "There are only two types of people in this world: winners and quitters!",
   "The less you open, the more you can't win!", "You lose 100% of the lootboxes you don't open!"
 ];
 const randomQuote = quotes[getRandomIntInclusive(0, quotes.length - 1)];
 
-const loading = ref<boolean>(false);
 const password = ref<string>("");
 const email = ref<string>("");
 const login = ref<boolean>(true);
 
-async function handleLogin () {
+async function loginOrSignup (type: "login" | "signup") {
   try {
-    loading.value = true;
+    
+    if (type == "login") {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.value,
+        password: password.value
+      });
+      if (error) throw error;
+      return data;
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email.value,
-      password: password.value
-    });
+    } else {
+      const { data, error } = await supabase.auth.signUp({
+        email: email.value,
+        password: password.value
+      });
+      if (error) throw error;
+      return data;
+    }
 
-    if (error) throw error;
+  } catch (error) {
+    if (error instanceof Error) {
+      alert(error.message);
+    }
+  }
+}
 
+async function handleAuth (type: "login" | "signup"): Promise<void> {
+  const data = await loginOrSignup(type);
+  
+  if (data && data.user && data.session) {
     sessionStore().changeSession({ 
       access_token: data.session.access_token,
       refresh_token: data.session.refresh_token,
@@ -76,44 +91,13 @@ async function handleLogin () {
       id: data.user.id,
       email: data.user.email,
      });
-
-  } catch (error) {
-    if (error instanceof Error) {
-      alert(error.message);
+    
+     const intendedRoute = clientStore().intendedRoute;
+    if (intendedRoute != "") {
+      router.push(intendedRoute);
+    } else {
+      router.push("/lootbox");
     }
-  } finally {
-    loading.value = false;
-  }
-}
-
-async function handleSignup () {
-  try {
-    loading.value = true;
-
-    const { data, error } = await supabase.auth.signUp({
-      email: email.value,
-      password: password.value
-    });
-
-    if (error) throw error;
-
-    if (data.session && data.user) {
-      sessionStore().changeSession({ 
-        access_token: data.session.access_token,
-        refresh_token: data.session.refresh_token,
-        token_type: data.session.token_type,
-        authenticated: true,
-        id: data.user.id,
-        email: data.user.email,
-       });
-    }
-
-  } catch (error) {
-    if (error instanceof Error) {
-      alert(error.message);
-    }
-  } finally {
-    loading.value = false;
   }
 }
 </script>
@@ -242,6 +226,10 @@ async function handleSignup () {
   background-color: #d6941a;
   padding: 0.2em;
   border-radius: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
 }
 .quote {
   background-color: #0c1824;

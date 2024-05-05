@@ -91,7 +91,14 @@ p {font-size: var(--p)}
 #text {font-size: var(--standard)}
 
 ::-webkit-scrollbar {
-  width: 0;
+  width: 0.75em;
+}
+::-webkit-scrollbar-track {
+  background-color: #17171c;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #ff5050;
+  border-radius: 1em;
 }
 
 button, a {

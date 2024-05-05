@@ -11,7 +11,7 @@
         </div>
       </div>
       <nav class="navBar">
-        <RouterLink to="/" class="lootboxes" :class="{ enabled: route.path == '/lootbox', disabled: email == '' }">
+        <RouterLink to="/lootbox" class="lootboxes" :class="{ enabled: route.path == '/lootbox', disabled: email == '' }">
           <img src="/chest.svg" alt="Lootboxes">
           <h3>Lootboxes</h3>
         </RouterLink>
@@ -54,14 +54,14 @@
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { ref, watch, onMounted } from 'vue';
 import { sessionStore } from './stores/session';
+import { clientStore } from '@/stores/client';
+import router from './router';
 
 const signout = ref<boolean> (false);
 const route = ref(useRoute());
 const email = ref<string | undefined> ("");
 
-watch(() => sessionStore().session, (newSession) => {
-  email.value = newSession.email;
-});
+watch(() => sessionStore().session, (newSession) => email.value = newSession.email);
 
 onMounted(() => {
   const storedAuth = localStorage.getItem("sb-toztwtlkcpaxhvmqtbdu-auth-token");
@@ -75,6 +75,11 @@ onMounted(() => {
       id: storedAuthJSON.user.id,
       email: storedAuthJSON.user.email
     });
+
+    const intendedRoute = clientStore().intendedRoute;
+    if (["/", "/login"].includes(intendedRoute) || !intendedRoute) {
+      router.push("/lootbox");
+    }
   }
 });
 
@@ -88,6 +93,7 @@ function logout (): void {
     email: ""
   });
 
+  clientStore().intendedRoute = String(route.value.name);
   localStorage.removeItem("sb-toztwtlkcpaxhvmqtbdu-auth-token");
 
   signout.value = false;
