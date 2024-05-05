@@ -92,4 +92,11 @@ function getRarity (rarity: string): string {
     }
 }
 
+@media screen and (max-width: 800px) {
+    .rarity {
+        width: 1px;
+        font-size: 1px;
+    }
+}
+
 </style>

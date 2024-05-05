@@ -540,6 +540,8 @@ async function insertData (): Promise<void> {
 
 @media screen and (max-width: 800px) {
   .chanceMenu {
+    width: 1px;
+    gap: 0;
     display: none;
   }
   .lootboxMenu {
