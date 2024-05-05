@@ -255,6 +255,7 @@ async function getData (): Promise<void> {
 @media screen and (max-width: 1200px) {
   .all {
     margin-top: 25em;
+    width: 80em;
   }
   #progressBar {
     width: 70em;
@@ -272,6 +273,9 @@ async function getData (): Promise<void> {
     width: 90%;
     padding: 1vh;
     max-height: 90%;
+  }
+  .all {
+    width: 40em;
   }
 }
 
