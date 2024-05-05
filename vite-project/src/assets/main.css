@@ -74,16 +74,16 @@
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  min-width: 1vw;
+  min-width: 100vw;
 }
 
 body {
   font-family: 'Kanit', sans-serif;
-  height: 100%;
+  height: 100vh;
   font-size: var(--standard);
   background: linear-gradient(to bottom right, var(--gradientGray1), var(--gradientGray2), var(--gradientGray3), var(--gradientGray4));
   margin: 0;
-  width: 100%;
+  width: 100vw;
   overflow-x: hidden;
 }
 
