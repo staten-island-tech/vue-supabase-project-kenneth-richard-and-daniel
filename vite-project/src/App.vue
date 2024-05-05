@@ -11,15 +11,15 @@
         </div>
       </div>
       <nav class="navBar">
-        <RouterLink to="/lootbox" class="lootboxes" :class="{ enabled: route.path == '/lootbox', disabled: email == '' }">
+        <RouterLink to="/lootbox" class="navButton lootboxes" :class="{ enabled: route.path == '/lootbox', disabled: email == '' }">
           <img src="/chest.svg" alt="Lootboxes">
           <h3>Lootboxes</h3>
         </RouterLink>
-        <RouterLink to="/inventory" class="inventoryButton" :class="{ enabled: route.path == '/inventory', disabled: email == '' }">
+        <RouterLink to="/inventory" class="navButton inventoryButton" :class="{ enabled: route.path == '/inventory', disabled: email == '' }">
           <img src="/backpack.svg" alt="Inventory">
           <h3>Inventory</h3>
         </RouterLink>
-        <RouterLink to="/trade-search" class="searcher" :class="{ enabled: route.path == '/trade-search', disabled: email == '' }">
+        <RouterLink to="/trade-search" class="navButton searcher" :class="{ enabled: route.path == '/trade-search', disabled: email == '' }">
           <img src="/magnify.svg" alt="Searcher">
           <h3>Trade</h3>
         </RouterLink>
@@ -33,11 +33,9 @@
         <h1>Do you want to sign out?</h1>
         <div class="signoutButtons">
           <button class="yes" @click="logout">
-            Yes, sign out.
             <img src="/check.svg" alt="Click to confirm sign out">
           </button>
           <button class="no" @click="signout = false">
-            No, go back.
             <img src="/cancel.svg" alt="Click to return to game">
           </button>
         </div>
@@ -126,7 +124,7 @@ function logout (): void {
   width: 40%;
   height: fit-content;
   min-height: 40%;
-  max-height: 80%;
+  max-height: 90%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -135,6 +133,7 @@ function logout (): void {
   padding: 3vh;
   overflow-y: auto;
   color: white;
+  text-align: center;
 }
 
 .signoutButtons {
@@ -153,30 +152,20 @@ function logout (): void {
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  height: 2.65em;
+  height: fit-content;
   width: 35%;
 }
 
 .signoutButtons button img {
   width: 3em;
   height: 3em;
-  margin-top: 1em;
 }
 
 .yes {
-  background-color: #ffc6c6;
+  background-color: #ff5152;
 }
 .no {
-  background-color: #c5ffca;
-}
-
-.yes:hover {
-  background-color: #ff5152;
-  height: 6.75em;
-}
-.no:hover {
   background-color: #51ff60;
-  height: 6.75em;
 }
 
 .signout-enter-active, .signout-leave-active {
@@ -216,9 +205,6 @@ function logout (): void {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.account:hover {
-  background-color: #51ff60;
 }
 .account img {
   width: 3em;
@@ -296,7 +282,7 @@ header {
   width: 70em;
   height: fit-content;
 }
-.navBar > * {
+.navButton {
   margin: 0;
   display: flex;
   gap: 3%;
@@ -314,23 +300,14 @@ header {
   background-color: var(--deepYellow);
   border-radius: 3em;
 }
-.lootboxes:hover {
-  filter: grayscale(0);
-}
 .inventoryButton {
   background-color: var(--cyan);
   border-radius: 3em;
-}
-.inventoryButton:hover {
-  filter: grayscale(0);
 }
 
 .searcher {
   background-color: var(--deepGreen);
   border-radius: 3em;
-}
-.searcher:hover {
-  filter: grayscale(0);
 }
 
 .navBar img {
@@ -340,6 +317,72 @@ header {
 
 .enabled {
   filter: grayscale(0);
+}
+
+@media screen and (max-width: 1600px) {
+  .navButton {
+    width: 10em;
+  }
+  .navButton h3 {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .headerDiv {
+    flex-direction: column;
+  }
+
+  .navBar {
+    margin-top: 1em;
+  }
+  .navButton {
+    width: 19.5em;
+  }
+  .navButton h3 {
+    display: block;
+  }
+
+  header {
+    height: 25em;
+    position: absolute;
+  }
+  .signoutMenu {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .navButton {
+    width: 10em;
+  }
+  .navButton h3 {
+    display: none;
+  }
+  .signoutMenu h1 {
+    font-size: var(--h2);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+.yes {
+  background-color: #ffc6c6;
+}
+.no {
+  background-color: #c5ffca;
+}
+.yes:hover {
+  background-color: #ff5152;
+}
+.no:hover {
+  background-color: #51ff60;
+}
+.account:hover {
+  background-color: #51ff60;
+}
+.navButton:hover {
+  filter: grayscale(0);
+}
 }
 
 </style>

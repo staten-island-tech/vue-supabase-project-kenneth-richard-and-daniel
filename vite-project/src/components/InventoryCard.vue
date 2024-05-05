@@ -12,11 +12,9 @@
         <h3><strong style="color: #ff5050; font-size: 1.25em;">This action is unrecoverable!</strong></h3>
         <div class="deleteButtons">
           <button class="yes" @click="deleteItem(item)">
-            Yes, delete
             <img src="/trash.svg" alt="Click to confirm sign out">
           </button>
           <button class="no" @click="deleteMenu = false">
-            No, go back
             <img src="/cancel.svg" alt="Click to return to game">
           </button>
         </div>
@@ -156,30 +154,20 @@ async function deleteItem (item: WeaponSkin): Promise<void> {
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  height: 2.65em;
+  height: fit-content;
   width: 35%;
 }
 
 .deleteButtons button img {
   width: 3em;
   height: 3em;
-  margin-top: 1em;
 }
 
 .yes {
-  background-color: #ffc6c6;
+  background-color: #ff5152;
 }
 .no {
-  background-color: #c5ffca;
-}
-
-.yes:hover {
-  background-color: #ff5152;
-  height: 6.75em;
-}
-.no:hover {
   background-color: #51ff60;
-  height: 6.75em;
 }
 
 .delete-enter-active, .delete-leave-active {
@@ -320,15 +308,88 @@ async function deleteItem (item: WeaponSkin): Promise<void> {
   margin-right: 0;
 }
 
-.finishedButton:hover {
-  filter: grayscale(0);
-}
-
 .disabledDelete {
   filter: grayscale(1);
 }
+
+@media screen and (max-width: 1200px) {
+  .itemCardMenu {
+    min-width: unset;
+    max-width: unset;
+    max-height: 90%;
+    width: 75vw;
+  }
+  .itemCardMenu h1 {
+    font-size: var(--h2);
+  }
+  .deleteMenu {
+    min-width: unset;
+    max-width: unset;
+    width: 65vw;
+  }
+  .buttonArray {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .itemCardMenu {
+    min-height: 65%;
+    width: 95vw;
+    padding: 1vw;
+    justify-content: center;
+    gap: 1vh;
+  }
+  .itemCardMenu h1 {
+    font-size: 2.75em;
+  }
+  .buttonArray {
+    margin-top: 2em;
+    width: 80%;
+    flex-direction: column;
+    align-items: center;
+  }
+  .buttonArray button {
+    width: 100%;
+  }
+  .deleteMenu {
+    width: 95vw;
+    padding: 0;
+    min-height: 50%;
+    max-height: 80%;
+  }
+  .deleteMenu h2 {
+    font-size: 2.75em;
+    width: 80%;
+  }
+  .deleteMenu h3 {
+    font-size: 2em;
+    width: 80%;
+  }
+  .deleteButtons {
+    height: fit-content;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+.yes {
+  background-color: #ffc6c6;
+}
+.no {
+  background-color: #c5ffca;
+}
+.yes:hover {
+  background-color: #ff5152;
+}
+.no:hover {
+  background-color: #51ff60;
+}
+.finishedButton:hover {
+  filter: grayscale(0);
+}
 .disabledDelete:hover {
   filter: grayscale(1);
+}
 }
 
 </style>

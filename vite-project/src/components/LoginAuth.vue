@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { supabase } from '@/lib/supabaseClient';
 import { sessionStore } from '@/stores/session';
 import { getRandomIntInclusive } from '@/assets/functions';
@@ -159,6 +159,7 @@ async function handleAuth (type: "login" | "signup"): Promise<void> {
   background-clip: text;
   width: fit-content;
   height: fit-content;
+  text-align: center;
 }
 .title h3 {
   font-size: 3em;
@@ -205,10 +206,6 @@ async function handleAuth (type: "login" | "signup"): Promise<void> {
   transition: all 0.5s;
 }
 
-.submit:hover {
-  background-color: #d61a1a;
-}
-
 .switch {
   height: fit-content;
   background-color: transparent;
@@ -246,6 +243,40 @@ async function handleAuth (type: "login" | "signup"): Promise<void> {
 }
 .quote h3 {
   margin: 0;
+}
+
+@media screen and (max-width: 1200px) {
+  .title h1 {
+    font-size: var(--h2);
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .title h1 {
+    font-size: 3em;
+  }
+  .title h3 {
+    display: none;
+  }
+  .titleBackground {
+    flex-direction: column;
+    height: fit-content;
+    gap: 1em;
+  }
+  .email, .password {
+    width: 90vw;
+    font-size: var(--h3);
+  }
+  .quote {
+    width: 90vw;
+    padding: 2vw;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+.submit:hover {
+  background-color: #d61a1a;
+}
 }
 
 </style>

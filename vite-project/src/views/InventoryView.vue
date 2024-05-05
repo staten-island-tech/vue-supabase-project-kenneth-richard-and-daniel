@@ -16,9 +16,9 @@
         <img src="/show.svg" alt="Click to hide undiscovered skins" v-if="showLockedBool">
       </button>
 
-      <button @click="sortInventory('date')" class="sortButton" :class="{ enabled: sortOption == 'date' }">Sort by Date</button>
-      <button @click="sortInventory('rarity')" class="sortButton" :class="{ enabled: sortOption == 'rarity' }">Sort by Rarity</button>
-      <button @click="sortInventory('weapon')" class="sortButton" :class="{ enabled: sortOption == 'weapon' }">Sort by Weapon</button>
+      <button @click="sortInventory('date')" class="sortButton" :class="{ enabled: sortOption == 'date' }"><span>Sort by </span>Date</button>
+      <button @click="sortInventory('rarity')" class="sortButton" :class="{ enabled: sortOption == 'rarity' }"><span>Sort by </span>Rarity</button>
+      <button @click="sortInventory('weapon')" class="sortButton" :class="{ enabled: sortOption == 'weapon' }"><span>Sort by </span>Weapon</button>
   </div>
 
   <div class="search">
@@ -33,7 +33,8 @@
       @click="sendItemToCard(item)">
           <h2>{{ item.displayName }}</h2>
           <img class="inventoryItemImg" :src="item.displayIcon" :alt="item.displayName" :class="{ karambit: ['Karambit', 'Blade', 'Imperium', 'Quo'].includes(item.displayName.split(' ')[item.displayName.split(' ').length - 1]) }">
-          <h3>x{{ item.inventoryCount }}</h3>
+          <h3 v-if="item.inventoryCount != 0">x{{ item.inventoryCount }}</h3>
+          <h3 v-else>{{ item.rarity }}</h3>
       </div>
 
       <div v-if="inventory.length == 0" class="wompwomp">
@@ -300,12 +301,6 @@ async function getData (): Promise<ApiData[]> {
   height: 3.5em;
   transition: all 0.5s;
 }
-.reverseButton:hover, .hideButton:hover {
-  transform: scale(1.1);
-}
-.reverseButton:hover img {
-  transform: rotate(180deg);
-}
 .reversed {
   transform: rotate(180deg);
 }
@@ -320,9 +315,6 @@ async function getData (): Promise<ApiData[]> {
   transition: all 0.5s;
   color: black;
 }
-.sortButton:hover {
-  filter: grayscale(0);
-}
 
 .enabled {
   filter: grayscale(0);
@@ -335,12 +327,11 @@ async function getData (): Promise<ApiData[]> {
   align-items: center;
   justify-content: center;
   gap: 1.5%;
-  width: 90%;
 }
 
 .inventoryItem {
   width: 20%;
-  min-height: 25em;
+  min-height: 30em;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -354,6 +345,7 @@ async function getData (): Promise<ApiData[]> {
 .inventoryItem h2 {
     margin: 0;
     font-size: 2.5em;
+    width: 85%;
 }
 .inventoryItem h3 {
     margin: 0;
@@ -366,9 +358,6 @@ async function getData (): Promise<ApiData[]> {
 .karambit {
   max-width: 40%;
   max-height: 40%;
-}
-.inventoryItem:hover {
-  transform: scale(1.05);
 }
 
 .common {
@@ -418,6 +407,71 @@ async function getData (): Promise<ApiData[]> {
 .search input:focus {
   outline: none;
   border-color: #ff5050;
+}
+
+@media screen and (max-width: 1600px) {
+  .sort {
+    width: 65%;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .sort {
+    margin-top: 25em;
+    width: 85%;
+  }
+  .inventoryItem {
+    width: 30%;
+    min-height: 25em;
+  }
+  .inventoryItem h2 {
+    font-size: 2.25em;
+  }
+
+}
+
+@media screen and (max-width: 800px) {
+  .hideButton {
+    display: none;
+  }
+  .inventory {
+    gap: 5%;
+  }
+  .inventoryItem {
+    width: 45%;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .sortButton span {
+    display: none;
+  }
+  .inventoryItem {
+    width: 90%;
+    min-height: 17.5em;
+  }
+  .inventoryItem img {
+    max-width: 40%;
+    max-height: 40%;
+  }
+  .inventoryItem h3 {
+    font-size: 1.5em;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+.reverseButton:hover, .hideButton:hover {
+  transform: scale(1.1);
+}
+.reverseButton:hover img {
+  transform: rotate(180deg);
+}
+.sortButton:hover {
+  filter: grayscale(0);
+}
+.inventoryItem:hover {
+  transform: scale(1.05);
+}
 }
 
 </style>

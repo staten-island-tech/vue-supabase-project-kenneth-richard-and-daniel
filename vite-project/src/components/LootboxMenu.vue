@@ -31,12 +31,14 @@
   </div>
 
   <div class="lootboxMenu">
-    <div class="boxDiv">
-      <div v-for="skin in wheel" class="loot" :class="{ common: skin.rarity == 'Common', rare: skin.rarity == 'Rare', epic: skin.rarity == 'Epic', legendary : skin.rarity == 'Legendary', godly: skin.rarity == 'Godly' }">
-        <img :src="skin.displayIcon" :alt="skin.displayName">
+    <div class="rollDiv">
+      <div class="boxDiv">
+        <div v-for="skin in wheel" class="loot" :class="{ common: skin.rarity == 'Common', rare: skin.rarity == 'Rare', epic: skin.rarity == 'Epic', legendary : skin.rarity == 'Legendary', godly: skin.rarity == 'Godly' }">
+          <img :src="skin.displayIcon" :alt="skin.displayName">
+        </div>
       </div>
+      <img src="/upArrow.svg" alt="This skin will be drawn" class="arrow actualArrow">
     </div>
-    <img src="/upArrow.svg" alt="This skin will be drawn" class="arrow">
     <div class="rollButtonArray">
       <button @click="roll" class="openCrate">
         <img src="/unlock.svg" alt="Click to open the lootbox" class="arrow" :class="{ locked: rolling }">
@@ -46,7 +48,7 @@
       <button @click="spin" class="fastOpen" :class="{ enabledFast: clientStore().fastSpin, disabledFast: rolling }">
         <img src="/fastForward.svg" alt="Click to speed up opening" class="arrow">
         <h3 v-if="rolling">Wait for box...</h3>
-        <h3 v-else-if="clientStore().fastSpin">Fast Opening</h3>
+        <h3 v-else-if="clientStore().fastSpin">Fast<span> Opening</span></h3>
         <h3 v-else>Slow Opening</h3>
       </button>
     </div>
@@ -284,6 +286,13 @@ async function insertData (): Promise<void> {
   height: 15em;
 }
 
+.rollDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .loot {
   width: 20%;
   height: 100%;
@@ -333,13 +342,6 @@ async function insertData (): Promise<void> {
   transition: all 0.5s;
 }
 
-.fastOpen:hover h3 {
-  display: block;
-}
-.fastOpen:hover img {
-  transform: translateX(15em);
-}
-
 .enabledFast {
   background-color: var(--deepGreen);
 }
@@ -373,13 +375,6 @@ async function insertData (): Promise<void> {
 }
 .openCrate img {
   transition: all 0.5s;
-}
-
-.openCrate:hover .unlockText {
-  display: block;
-}
-.openCrate:hover img {
-  transform: translateY(10em);
 }
 
 .unlockingText {
@@ -528,8 +523,85 @@ async function insertData (): Promise<void> {
   margin-right: 0;
 }
 
+@media screen and (max-width: 1200px) {
+  .boxDiv {
+    width: 70em;
+    height: 12em;
+    gap: 1%;
+  }
+  .loot {
+    border-radius: 2em;
+  }
+  .arrow {
+    width: 6em;
+    height: 6em;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .chanceMenu {
+    display: none;
+  }
+  .lootboxMenu {
+    margin-top: 2em;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 95vw;
+  }
+  .boxDiv {
+    flex-direction: column;
+    width: 50vw;
+    height: 40em;
+    justify-content: center;
+    gap: 2%;
+  }
+  .rollDiv {
+    flex-direction: row;
+  }
+  .loot {
+    width: 95%;
+    height: 18%;
+  }
+  .actualArrow {
+    transform: rotate(270deg);
+  }
+  .rollButtonArray {
+    flex-direction: column;
+    width: 25vw;
+  }
+  .openCrate, .fastOpen {
+    width: 100%;
+  }
+  .enabledFast h3 {
+    display: none;
+  }
+  .enabledFast img {
+    transform: translateX(0);
+  }
+  .unlockingText {
+    display: none;
+  }
+  .locked {
+    transform: translateY(0);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+.fastOpen:hover h3 {
+  display: block;
+}
+.fastOpen:hover img {
+  transform: translateX(15em);
+}
+.openCrate:hover .unlockText {
+  display: block;
+}
+.openCrate:hover img {
+  transform: translateY(10em);
+}
 .finishedButton:hover {
   filter: grayscale(0);
+}
 }
 
 </style>
