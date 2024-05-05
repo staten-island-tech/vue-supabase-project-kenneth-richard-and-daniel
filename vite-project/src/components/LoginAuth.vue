@@ -252,24 +252,46 @@ async function handleAuth (type: "login" | "signup"): Promise<void> {
 }
 
 @media screen and (max-width: 800px) {
+  .title {
+    width: 90%;
+  }
   .title h1 {
-    font-size: 3em;
+    font-size: 2.75em;
+    width: 90%;
+  }
+  .title p {
+    font-size: 1.5em;
+    width: 80%;
   }
   .title h3 {
     display: none;
+    width: 1px;
+    height: 1px;
+    font-size: 1px;
+  }
+  .titleBorder {
+    padding: 0.5vw;
   }
   .titleBackground {
     flex-direction: column;
     height: fit-content;
     gap: 1em;
+    padding: 0.5vw;
+    width: 90vw;
   }
   .email, .password {
     width: 90vw;
-    font-size: var(--h3);
+    font-size: 1.5em;
+  }
+  .quoteBackground {
+    margin-bottom: 5em;
   }
   .quote {
     width: 90vw;
     padding: 2vw;
+  }
+  .switch {
+    width: 90vw;
   }
 }
 

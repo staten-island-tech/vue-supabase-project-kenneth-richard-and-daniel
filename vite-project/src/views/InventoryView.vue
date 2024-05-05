@@ -327,6 +327,7 @@ async function getData (): Promise<ApiData[]> {
   align-items: center;
   justify-content: center;
   gap: 1.5%;
+  width: 90vw;
 }
 
 .inventoryItem {
@@ -431,14 +432,39 @@ async function getData (): Promise<ApiData[]> {
 }
 
 @media screen and (max-width: 800px) {
+  .sort {
+    flex-wrap: wrap;
+    width: 90vw;
+  }
+  .sortButton, .reverseButton {
+    width: 45%;
+  }
   .hideButton {
     display: none;
+    width: 1px;
+    height: 1px;
+  }
+  .search {
+    width: 90vw;
+  }
+  .search h3 {
+    display: none;
+    width: 1px;
+    height: 1px;
+    font-size: 1px;
+  }
+  .search input {
+    width: 100%;
   }
   .inventory {
     gap: 5%;
+    margin-bottom: 5em;
   }
   .inventoryItem {
     width: 45%;
+  }
+  .inventoryItem h2 {
+    font-size: 1.75em;
   }
 }
 
@@ -465,6 +491,9 @@ async function getData (): Promise<ApiData[]> {
 }
 .reverseButton:hover img {
   transform: rotate(180deg);
+}
+.reverseButton:hover .reversed {
+  transform: rotate(0deg);
 }
 .sortButton:hover {
   filter: grayscale(0);

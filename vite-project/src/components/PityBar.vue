@@ -268,6 +268,7 @@ async function getData (): Promise<void> {
 @media screen and (max-width: 800px) {
   #progressBar {
     width: 30em;
+    height: 2.25em;
   }
   .helpMenuDiv {
     width: 90%;
@@ -275,7 +276,15 @@ async function getData (): Promise<void> {
     max-height: 90%;
   }
   .all {
-    width: 40em;
+    width: 90vw;
+  }
+  .help {
+    width: 5em;
+    height: 5em;
+  }
+  .help img {
+    width: 5em;
+    height: 5em;
   }
 }
 

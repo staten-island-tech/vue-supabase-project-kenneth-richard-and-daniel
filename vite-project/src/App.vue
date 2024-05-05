@@ -6,7 +6,7 @@
           <img src="/valorant.svg" alt="VALORANT Logo">
           <div class="logoTitle">
             <h2>VALORANT Case Opener</h2>
-            <p v-if="email != ''">{{ email }} <button class="account" @click="signout = true"><img src="/exit.svg" alt="Click to sign out of your account"></button></p>
+            <p v-if="email != ''"><span>{{ email }}</span> <button class="account" @click="signout = true"><img src="/exit.svg" alt="Click to sign out of your account"></button></p>
           </div>
         </div>
       </div>
@@ -353,8 +353,38 @@ header {
 }
 
 @media screen and (max-width: 800px) {
+  .logo {
+    padding: 0;
+    width: 95vw;
+  }
+  .logo img {
+    max-width: 1px;
+    max-height: 1px;
+    display: none;
+  }
+  .logoTitle h2 {
+    font-size: var(--h3);
+  }
+  .logoTitle p {
+    width: fit-content;
+  }
+  .logoTitle p span {
+    font-size: 1px;
+    display: none;
+  }
+  .logoTitle p button {
+    width: 25vw;
+    height: fit-content;
+    padding: 1vw;
+  }
+  .logoTitle p button img {
+    display: unset;
+    max-width: unset;
+    max-height: unset;
+  }
   .navButton {
-    width: 10em;
+    width: 25vw;
+    padding: 0.5vw;
   }
   .navButton h3 {
     display: none;
@@ -364,6 +394,9 @@ header {
   }
   .navBar {
     width: 95vw;
+  }
+  .signoutButtons button {
+    width: 45%;
   }
 }
 

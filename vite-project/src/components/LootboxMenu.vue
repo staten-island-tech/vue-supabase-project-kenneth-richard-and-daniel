@@ -38,6 +38,7 @@
         </div>
       </div>
       <img src="/upArrow.svg" alt="This skin will be drawn" class="arrow actualArrow">
+      <img src="/rightArrow.svg" alt="This skin will be drawn" class="arrow mobileArrow">
     </div>
     <div class="rollButtonArray">
       <button @click="roll" class="openCrate">
@@ -523,6 +524,12 @@ async function insertData (): Promise<void> {
   margin-right: 0;
 }
 
+.mobileArrow {
+  display: none;
+  width: 1px;
+  height: 1px;
+}
+
 @media screen and (max-width: 1200px) {
   .boxDiv {
     width: 70em;
@@ -541,18 +548,18 @@ async function insertData (): Promise<void> {
 @media screen and (max-width: 800px) {
   .chanceMenu {
     width: 1px;
+    height: 1px;
     gap: 0;
     display: none;
   }
   .lootboxMenu {
     margin-top: 2em;
-    flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: center;
     width: 95vw;
   }
   .boxDiv {
     flex-direction: column;
-    width: 50vw;
+    width: 65vw;
     height: 40em;
     justify-content: center;
     gap: 2%;
@@ -565,14 +572,22 @@ async function insertData (): Promise<void> {
     height: 18%;
   }
   .actualArrow {
-    transform: rotate(270deg);
+    display: none;
+    width: 1px;
+    height: 1px;
+  }
+  .mobileArrow {
+    display: block;
+    width: 5em;
+    height: 5em;
   }
   .rollButtonArray {
-    flex-direction: column;
-    width: 25vw;
+    width: 90vw;
+    gap: 5%;
+    margin-bottom: 5em;
   }
   .openCrate, .fastOpen {
-    width: 100%;
+    width: 45%;
   }
   .enabledFast h3 {
     display: none;

@@ -312,6 +312,10 @@ async function deleteItem (item: WeaponSkin): Promise<void> {
   filter: grayscale(1);
 }
 
+.title, .description {
+  text-align: center;
+}
+
 @media screen and (max-width: 1200px) {
   .itemCardMenu {
     min-width: unset;
@@ -334,14 +338,14 @@ async function deleteItem (item: WeaponSkin): Promise<void> {
 
 @media screen and (max-width: 800px) {
   .itemCardMenu {
-    min-height: 65%;
+    min-height: 55%;
     width: 95vw;
     padding: 1vw;
     justify-content: center;
     gap: 1vh;
   }
   .itemCardMenu h1 {
-    font-size: 2.75em;
+    font-size: 2.25em;
   }
   .buttonArray {
     margin-top: 2em;
@@ -368,6 +372,12 @@ async function deleteItem (item: WeaponSkin): Promise<void> {
   }
   .deleteButtons {
     height: fit-content;
+  }
+  .title {
+    font-size: 1.75em;
+  }
+  .description {
+    font-size: 1.75em;
   }
 }
 
