@@ -50,7 +50,7 @@ import type { WeaponSkin } from '@/assets/types';
 import { supabase } from '@/lib/supabaseClient';
 import { clientStore } from '@/stores/client';
 import { sessionStore } from '@/stores/session';
-import { ref, defineEmits } from 'vue';
+import { ref } from 'vue';
 
 type Props = {
     item: WeaponSkin;

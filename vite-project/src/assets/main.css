@@ -74,7 +74,8 @@
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  min-width: 100vw;
+  width: 100vw;
+  max-width: 100vw;
 }
 
 body {
@@ -83,7 +84,8 @@ body {
   font-size: var(--standard);
   background: linear-gradient(to bottom right, var(--gradientGray1), var(--gradientGray2), var(--gradientGray3), var(--gradientGray4));
   margin: 0;
-  min-width: 100vw;
+  width: 100vw;
+  max-width: 100vw;
   overflow-x: hidden;
   display: flex;
   align-items: center;

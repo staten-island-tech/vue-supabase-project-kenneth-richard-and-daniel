@@ -230,7 +230,7 @@ function logout (): void {
 
 header {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 90%, transparent);
-  width: 100%;
+  width: 100vw;
   height: 17em;
   position: fixed;
   z-index: 9999999;
