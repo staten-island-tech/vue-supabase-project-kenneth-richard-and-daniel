@@ -1,5 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 :root {
   --gradientGray1: #5a5a5c;
@@ -114,4 +115,13 @@ button, a {
 input {
   font-family: 'Kanit', sans-serif;
   color: black;
+}
+
+@media (pointer: coarse) {
+  body {
+    font-family: "Open Sans", sans-serif;
+  }
+  button, a, input {
+    font-family: "Open Sans", sans-serif;
+  }
 }
