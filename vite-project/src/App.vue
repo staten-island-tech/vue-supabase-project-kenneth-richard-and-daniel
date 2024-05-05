@@ -362,6 +362,9 @@ header {
   .signoutMenu h1 {
     font-size: var(--h2);
   }
+  .navBar {
+    width: 95vw;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
