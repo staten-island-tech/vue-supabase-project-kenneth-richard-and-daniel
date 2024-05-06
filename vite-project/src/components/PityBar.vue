@@ -174,12 +174,6 @@ async function getData (): Promise<void> {
   height: 5em;
   transition: all 0.75s;
 }
-.closeHelpMenu:hover {
-  transform: scale(1.1);
-}
-.closeHelpMenu:hover img {
-  transform: rotate(360deg);
-}
 
 .helpMenu-enter-active, .helpMenu-leave-active {
   transition: all 0.5s ease-in-out;
@@ -234,12 +228,6 @@ async function getData (): Promise<void> {
   height: 6em;
   transition: all 1s;
 }
-.help:hover {
-  transform: scale(1.1);
-}
-.help:hover img {
-  transform: rotate(720deg);
-}
 
 .fullButton {
   background: linear-gradient(to bottom right, #7700ff, #b23af2, #7700ff);
@@ -262,6 +250,57 @@ async function getData (): Promise<void> {
 
 .full {
   background: linear-gradient(to right, #7700ff, #b23af2, #7700ff);
+}
+
+@media screen and (max-width: 1200px) {
+  .all {
+    margin-top: 25em;
+    width: 80em;
+  }
+  #progressBar {
+    width: 70em;
+  }
+  .helpMenuDiv {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  #progressBar {
+    width: 30em;
+    height: 2.25em;
+  }
+  .helpMenuDiv {
+    width: 90%;
+    padding: 1vh;
+    max-height: 90%;
+  }
+  .all {
+    width: 90vw;
+  }
+  .help {
+    width: 5em;
+    height: 5em;
+  }
+  .help img {
+    width: 5em;
+    height: 5em;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+.closeHelpMenu:hover {
+  transform: scale(1.1);
+}
+.closeHelpMenu:hover img {
+  transform: rotate(360deg);
+}
+.help:hover {
+  transform: scale(1.1);
+}
+.help:hover img {
+  transform: rotate(720deg);
+}
 }
 
 </style>

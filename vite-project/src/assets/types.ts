@@ -99,6 +99,7 @@ export type SessionData = {
     authenticated: boolean;
     id: string;
     email: string | undefined;
+    newPlayer: boolean;
 }
 
 export type Inventory = WeaponSkin[];

@@ -1,38 +1,53 @@
 <template>
 
   <Transition name="itemCard">
-      <div v-if="showItemCard" class="itemCardBackground">
-        <InventoryCard :item="currentItem" @close="showItemCard = false" />
-      </div>
-    </Transition>
+    <div v-if="showItemCard" class="itemCardBackground">
+      <InventoryCard :item="currentItem" @close="showItemCard = false" />
+    </div>
+  </Transition>
+
+  <Transition name="itemCard">
+    <div v-if="newPlayerCheck" class="itemCardBackground">
+      <NewPlayerCard @close="newPlayerCheck = false" />
+    </div>
+  </Transition>
   
-  <div class="sort" v-if="session && session.access_token != ''">
+  <div class="sort">
       <button class="reverseButton" @click="reverseInventory">
         <img src="/arrowSortBottom.svg" alt="Click to reverse the inventory filter" :class="{ reversed: sortReverse == true }">
       </button>
+      
+      <button class="hideButton" @click="showLocked" :class="{ notHidden: !showLockedBool }">
+        <img src="/hide.svg" alt="Click to show undiscovered skins" v-if="!showLockedBool">
+        <img src="/show.svg" alt="Click to hide undiscovered skins" v-if="showLockedBool">
+      </button>
 
-      <button @click="sortInventory('date')" class="sortButton" :class="{ enabled: sortOption == 'date' }">Sort by Date</button>
-      <button @click="sortInventory('rarity')" class="sortButton" :class="{ enabled: sortOption == 'rarity' }">Sort by Rarity</button>
-      <button @click="sortInventory('count')" class="sortButton" :class="{ enabled: sortOption == 'count' }">Sort by Count</button>
+      <button @click="sortInventory('date')" class="sortButton" :class="{ enabled: sortOption == 'date' }"><span>Sort by </span>Date</button>
+      <button @click="sortInventory('rarity')" class="sortButton" :class="{ enabled: sortOption == 'rarity' }"><span>Sort by </span>Rarity</button>
+      <button @click="sortInventory('weapon')" class="sortButton" :class="{ enabled: sortOption == 'weapon' }"><span>Sort by </span>Weapon</button>
   </div>
 
-  <div v-if="session && session.access_token != ''" class="inventory">
+  <div class="search">
+    <h3>Search</h3>
+    <input type="text" placeholder="Type to narrow search" @input="searchInventory">
+  </div>
+
+  <div class="inventory">
       <div v-for="item in inventory" class="inventoryItem"
       :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare', epic: item.rarity == 'Epic',
-      legendary : item.rarity == 'Legendary', godly: item.rarity == 'Godly' }"
+      legendary : item.rarity == 'Legendary', godly: item.rarity == 'Godly', lockedItem: item.inventoryCount == 0 }"
       @click="sendItemToCard(item)">
           <h2>{{ item.displayName }}</h2>
-          <img :src="item.displayIcon" :alt="item.displayName">
-          <h3>x{{ item.inventoryCount }}</h3>
+          <img class="inventoryItemImg" :src="item.displayIcon" :alt="item.displayName" :class="{ karambit: ['Karambit', 'Blade', 'Imperium', 'Quo'].includes(item.displayName.split(' ')[item.displayName.split(' ').length - 1]) }">
+          <h3 v-if="item.inventoryCount != 0">x{{ item.inventoryCount }}</h3>
+          <h3 v-else>{{ item.rarity }}</h3>
       </div>
 
       <div v-if="inventory.length == 0" class="wompwomp">
-          <h2>You don't have any items. L Bozo</h2>
-          <h3>Open some boxes to get started! :D</h3>
+          <h2>No items match your search.</h2>
+          <h3>Try searching for something else!</h3>
       </div>
   </div>
-
-  <LoginAuth v-else/>
 
 </template>
 
@@ -44,8 +59,9 @@ import { sessionStore } from '@/stores/session';
 import { getSkins } from '@/stores/lootboxes';
 import type { Inventory, NewWeapon, WeaponSkin } from '@/assets/types';
 import { clientStore } from '@/stores/client';
-import LoginAuth from '@/components/LoginAuth.vue';
 import InventoryCard from '@/components/InventoryCard.vue';
+import { watchLogout } from '@/assets/functions';
+import NewPlayerCard from '@/components/NewPlayerCard.vue';
 
 type ApiData = {
     skin_id: number;
@@ -54,12 +70,12 @@ type ApiData = {
     date: string;
 }
 
-const session = ref<any> ();
 const loaded = ref<boolean> (false);
 const inventory = ref<Inventory> ([]);
 const sortOption = ref<string> ("date");
 const showItemCard = ref<boolean> (false);
 const sortReverse = ref<boolean> (false);
+const showLockedBool = ref<boolean> (false);
 const currentItem = ref<WeaponSkin> ({
   defaultName: "",
   category: "",
@@ -71,20 +87,32 @@ const currentItem = ref<WeaponSkin> ({
   inventoryCount: 0,
   date: ""
 });
+const searchParam = ref<string> ("");
+const newPlayerCheck = ref<boolean> (false);
 
 let originalInventory: Inventory = [];
+let mutatedInventory: Inventory = [];
 
-watch(() => sessionStore().session, (newSession) => session.value = newSession);
+watch(() => sessionStore().session, (newSession) => watchLogout(newSession));
 watch(() => clientStore().currentInventory, (newInventory) => inventory.value = newInventory);
+watch(() => clientStore().hidden, () => getInventory());
 
 onMounted(async () => {
-    session.value = sessionStore().session;
+    watchLogout(sessionStore().session);
     loaded.value = false;
     inventory.value = clientStore().currentInventory;
     sortOption.value = clientStore().sort;
     sortReverse.value = clientStore().reversed;
+    showLockedBool.value = clientStore().hidden;
+    newPlayerCheck.value = sessionStore().session.newPlayer;
     getInventory();
 });
+
+function searchInventory (event: Event): void {
+  const inputValue = (event.target as HTMLInputElement).value;
+  searchParam.value = inputValue;
+  inventory.value = mutatedInventory.filter((item) => item.displayName.toLowerCase().includes(inputValue.toLowerCase()));
+}
 
 function reverseInventory (): void {
   inventory.value = [...inventory.value].reverse();
@@ -92,29 +120,44 @@ function reverseInventory (): void {
   sortReverse.value = !sortReverse.value;
 }
 
+function showLocked (): void {
+  clientStore().changeHidden();
+  showLockedBool.value = !showLockedBool.value;
+}
+
 function sendItemToCard (item: WeaponSkin): void {
   currentItem.value = item;
   showItemCard.value = true;
 }
 
-function sortInventory (sortBy: "rarity" | "count" | "date"): void {
+async function sortInventory (sortBy: "rarity" | "weapon" | "date"): Promise<void> {
     clientStore().sort = sortBy;
     sortOption.value = sortBy;
 
+    const newInventory: Inventory = [];
+
     if (sortBy == "rarity") {
-        const newInventory: Inventory = [];
         newInventory.push(...originalInventory.filter((item) => item.rarity == "Common"));
         newInventory.push(...originalInventory.filter((item) => item.rarity == "Rare"));
         newInventory.push(...originalInventory.filter((item) => item.rarity == "Epic"));
         newInventory.push(...originalInventory.filter((item) => item.rarity == "Legendary"));
         newInventory.push(...originalInventory.filter((item) => item.rarity == "Godly"));
         inventory.value = sortReverse.value == true ? [...newInventory].reverse() : newInventory;
-    } else if (sortBy == "count") {
-        inventory.value = sortReverse.value == true ? [...originalInventory].sort((a, b) => a.inventoryCount - b.inventoryCount).reverse() : [...originalInventory].sort((a, b) => a.inventoryCount - b.inventoryCount);
+
+    } else if (sortBy == "weapon") {
+      for (let weapon of await getSkins()) newInventory.push(...originalInventory.filter((item) => item.defaultName == weapon.displayName));
+      inventory.value = sortReverse.value == true ? [...newInventory].reverse() : newInventory;
+
     } else if (sortBy == "date") {
-        inventory.value = sortReverse.value == true ? [...originalInventory].reverse() : [...originalInventory];
+      for (let item of [...originalInventory].filter((item) => item.date)) {
+        newInventory.push(item);
+      }
+      newInventory.push(...originalInventory.filter((item) => !item.date));
+      inventory.value = sortReverse.value == true ? [...newInventory].reverse() : [...newInventory];
     }
 
+    mutatedInventory = inventory.value;
+    inventory.value = mutatedInventory.filter((item) => item.displayName.toLowerCase().includes(searchParam.value.toLowerCase()));
     clientStore().currentInventory = inventory.value;
 }
 
@@ -133,18 +176,19 @@ async function getInventory (): Promise<void> {
     for (let skin of inventorySkins) {
         const found: WeaponSkin | undefined = combinedSkins.find((item) => skin == item.displayName);
 
-        if (found && inventoryTranslated.includes(found)) {
-          found.inventoryCount++;
-
-        } else if (found) {
-          const foundInInventory = inventoryUser.find((item) => item.skin_name == found.displayName);
-          if (foundInInventory) found.date = foundInInventory.date;
+        if (found) {
+          const foundInInventory: ApiData | undefined = inventoryUser.find((item) => item.skin_name == found.displayName);
+          if (foundInInventory) {
+            found.inventoryCount++;
+            found.date = foundInInventory.date;
+          } 
 
           inventoryTranslated.push(found);
         }
     }
     
-    originalInventory = inventoryTranslated;
+    const remainingSkins = combinedSkins.filter((item) => inventoryUser.find((inventoryItem) => inventoryItem.skin_name == item.displayName)?.skin_name != (item.displayName))
+    originalInventory = showLockedBool.value == true ? inventoryTranslated.concat(remainingSkins) : inventoryTranslated;
     sortInventory(clientStore().sort);
 
     clientStore().currentInventory = inventory.value;
@@ -233,7 +277,7 @@ async function getData (): Promise<ApiData[]> {
 
 .sort {
   margin-top: 19em;
-  margin-bottom: 4em;
+  margin-bottom: 1em;
   width: 50%;
   display: flex;
   justify-content: center;
@@ -241,27 +285,30 @@ async function getData (): Promise<ApiData[]> {
   gap: 5%;
 }
 
-.reverseButton {
+.reverseButton, .hideButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 6em;
+  width: 6.5em;
   height: 5em;
   border-radius: 2.5em;
   overflow: hidden;
   background-color: var(--pastelYellow);
   transition: all 0.5s;
 }
-.reverseButton img {
+.hideButton {
+  background-color: var(--cyan);
+}
+.notHidden {
+  filter: grayscale(1);
+}
+.lockedItem {
+  filter: grayscale(0.95);
+}
+.reverseButton img, .hideButton img {
   width: 3.5em;
   height: 3.5em;
   transition: all 0.5s;
-}
-.reverseButton:hover {
-  transform: scale(1.1);
-}
-.reverseButton:hover img {
-  transform: rotate(180deg);
 }
 .reversed {
   transform: rotate(180deg);
@@ -277,9 +324,6 @@ async function getData (): Promise<ApiData[]> {
   transition: all 0.5s;
   color: black;
 }
-.sortButton:hover {
-  filter: grayscale(0);
-}
 
 .enabled {
   filter: grayscale(0);
@@ -292,12 +336,12 @@ async function getData (): Promise<ApiData[]> {
   align-items: center;
   justify-content: center;
   gap: 1.5%;
-  width: 90%;
+  width: 90vw;
 }
 
 .inventoryItem {
   width: 20%;
-  min-height: 25em;
+  min-height: 30em;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -311,17 +355,19 @@ async function getData (): Promise<ApiData[]> {
 .inventoryItem h2 {
     margin: 0;
     font-size: 2.5em;
+    width: 85%;
 }
 .inventoryItem h3 {
     margin: 0;
 }
 
-.inventoryItem img {
+.inventoryItemImg {
   max-width: 60%;
   max-height: 60%;
 }
-.inventoryItem:hover {
-  transform: scale(1.05);
+.karambit {
+  max-width: 40%;
+  max-height: 40%;
 }
 
 .common {
@@ -338,6 +384,132 @@ async function getData (): Promise<ApiData[]> {
 }
 .godly {
   background: var(--godly);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  gap: 5%;
+  margin-bottom: 4em;
+}
+.search h3 {
+  margin: 0;
+  color: white;
+}
+.search input {
+  width: 15em;
+  font-size: 2em;
+  padding: 0.25em;
+  border-radius: 0.8em;
+  color: black;
+  background-color: #cacaca;
+  border-style: solid;
+  text-align: center;
+}
+
+.search input::placeholder {
+  color: black;
+  opacity: 1;
+}
+
+.search input:focus {
+  outline: none;
+  border-color: #ff5050;
+}
+
+@media screen and (max-width: 1600px) {
+  .sort {
+    width: 65%;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .sort {
+    margin-top: 25em;
+    width: 85%;
+  }
+  .inventoryItem {
+    width: 30%;
+    min-height: 25em;
+  }
+  .inventoryItem h2 {
+    font-size: 2.25em;
+  }
+
+}
+
+@media screen and (max-width: 800px) {
+  .sort {
+    flex-wrap: wrap;
+    width: 90vw;
+  }
+  .sortButton, .reverseButton {
+    width: 45%;
+  }
+  .hideButton {
+    display: none;
+    width: 1px;
+    height: 1px;
+  }
+  .search {
+    width: 90vw;
+  }
+  .search h3 {
+    display: none;
+    width: 1px;
+    height: 1px;
+    font-size: 1px;
+  }
+  .search input {
+    width: 100%;
+  }
+  .inventory {
+    gap: 5%;
+    margin-bottom: 5em;
+  }
+  .inventoryItem {
+    width: 45%;
+  }
+  .inventoryItem h2 {
+    font-size: 1.75em;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .sortButton span {
+    display: none;
+  }
+  .inventoryItem {
+    width: 90%;
+    min-height: 17.5em;
+  }
+  .inventoryItem img {
+    max-width: 40%;
+    max-height: 40%;
+  }
+  .inventoryItem h3 {
+    font-size: 1.5em;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+.reverseButton:hover, .hideButton:hover {
+  transform: scale(1.1);
+}
+.reverseButton:hover img {
+  transform: rotate(180deg);
+}
+.reverseButton:hover .reversed {
+  transform: rotate(0deg);
+}
+.sortButton:hover {
+  filter: grayscale(0);
+}
+.inventoryItem:hover {
+  transform: scale(1.05);
+}
 }
 
 </style>

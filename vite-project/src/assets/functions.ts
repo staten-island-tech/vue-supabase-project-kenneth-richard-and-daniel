@@ -1,3 +1,5 @@
+import router from "@/router";
+import type { SessionData } from "./types";
 
 export function delay (ms: number) {
     return new Promise((executor: any) => setTimeout(executor, ms));
@@ -17,4 +19,10 @@ export function formatDate (date: string): string {
     const year = date[0] + date[1] + date[2] + date[3];
     
     return `${months[Number(month) - 1]} ${day}, ${year}`;
+}
+
+export function watchLogout (session: SessionData): void {
+    if (session.access_token == "") {
+        router.push({ path: "/" });
+    }
 }

@@ -1,3 +1,5 @@
+import { clientStore } from '@/stores/client'
+import { sessionStore } from '@/stores/session';
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -5,12 +7,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: () => import ('../views/HomeView.vue')
+      redirect: '/login'
     }, {
-      path: '/all-skins',
-      name: 'all-skins',
-      component: () => import('../views/SkinView.vue')
+      path: '/lootbox',
+      name: 'lootbox',
+      component: () => import ('../views/HomeView.vue')
     }, {
       path: '/inventory',
       name: 'inventory',
@@ -19,8 +20,21 @@ const router = createRouter({
       path: '/trade-search',
       name: 'trade-search',
       component: () => import('../views/TradeSearch.vue')
+    }, {
+      path: '/login',
+      name: 'login',
+      component: () => import('../components/LoginAuth.vue')
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  if (!["/", "/login"].includes(to.fullPath) && sessionStore().session.access_token == "") {
+    clientStore().intendedRoute = to.fullPath;
+    next("/login");
+  } else {
+    next();
+  }
 })
 
 export default router

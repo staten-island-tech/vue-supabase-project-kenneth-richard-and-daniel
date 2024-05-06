@@ -1,6 +1,6 @@
 <template>
     <div v-for="skin in props.Wheel" class="rarity" :class="skin.rarity[0].toLowerCase() + skin.rarity.slice(1)">
-        <h3>{{ skin.rarity }}: {{ getRarity(skin.rarity) }}%</h3>
+        <h3>{{ skin.rarity }}<span>: {{ getRarity(skin.rarity) }}%</span></h3>
     </div>
 </template>
 
@@ -81,6 +81,22 @@ function getRarity (rarity: string): string {
     background-color: transparent;
     background: 0;
     color: transparent;
+}
+
+@media screen and (max-width: 1200px) {
+    .rarity {
+        width: 11em;
+    }
+    .rarity h3 span {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .rarity {
+        width: 1px;
+        font-size: 1px;
+    }
 }
 
 </style>

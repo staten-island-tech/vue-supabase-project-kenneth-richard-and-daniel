@@ -12,11 +12,9 @@
         <h3><strong style="color: #ff5050; font-size: 1.25em;">This action is unrecoverable!</strong></h3>
         <div class="deleteButtons">
           <button class="yes" @click="deleteItem(item)">
-            Yes, delete
             <img src="/trash.svg" alt="Click to confirm sign out">
           </button>
           <button class="no" @click="deleteMenu = false">
-            No, go back
             <img src="/cancel.svg" alt="Click to return to game">
           </button>
         </div>
@@ -29,10 +27,11 @@
       <h1 class="title">{{ item.displayName }}</h1>
       <h3 class="title">{{ item.rarity }} {{ item.defaultName }}</h3>
       <img :src="item.displayIcon" :alt="item.displayName" :class="{ unlockImg: item.category == 'Pistols' || item.category == null, unlockImgBig: item.category != 'Pistols' && item.category != null }">
-      <h3 class="description">First unlocked: <span>{{ formatDate(item.date) }}</span></h3>
-      <h3 class="description">You have: <span>{{ item.inventoryCount }}</span></h3>
+      <h3 class="description" v-if="item.inventoryCount != 0">First unlocked: <span>{{ formatDate(item.date) }}</span></h3>
+      <h3 class="description" v-else>You have not unlocked this item yet!</h3>
+      <h3 class="description" v-if="item.inventoryCount != 0">You have: <span>{{ item.inventoryCount }}</span></h3>
       <div class="buttonArray">
-        <button class="finishedButton deleteButton" @click="deleteMenu = true">
+        <button class="finishedButton deleteButton" @click="openDeleteMenu" :class="{ disabledDelete: item.inventoryCount == 0 }">
           <img src="/trash.svg" alt="Click to delete all of this item">
           <h3>Delete All</h3>
         </button>
@@ -51,7 +50,7 @@ import type { WeaponSkin } from '@/assets/types';
 import { supabase } from '@/lib/supabaseClient';
 import { clientStore } from '@/stores/client';
 import { sessionStore } from '@/stores/session';
-import { ref, defineEmits } from 'vue';
+import { ref } from 'vue';
 
 type Props = {
     item: WeaponSkin;
@@ -61,6 +60,10 @@ const props = defineProps<Props> ();
 const deleteMenu = ref<boolean> (false);
 
 const emit = defineEmits(["close"]);
+
+function openDeleteMenu (): void {
+  if (props.item.inventoryCount != 0) deleteMenu.value = true;
+}
 
 function closeCard (): void {
   emit("close");
@@ -151,30 +154,20 @@ async function deleteItem (item: WeaponSkin): Promise<void> {
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  height: 2.65em;
+  height: fit-content;
   width: 35%;
 }
 
 .deleteButtons button img {
   width: 3em;
   height: 3em;
-  margin-top: 1em;
 }
 
 .yes {
-  background-color: #ffc6c6;
+  background-color: #ff5152;
 }
 .no {
-  background-color: #c5ffca;
-}
-
-.yes:hover {
-  background-color: #ff5152;
-  height: 6.75em;
-}
-.no:hover {
   background-color: #51ff60;
-  height: 6.75em;
 }
 
 .delete-enter-active, .delete-leave-active {
@@ -315,8 +308,98 @@ async function deleteItem (item: WeaponSkin): Promise<void> {
   margin-right: 0;
 }
 
+.disabledDelete {
+  filter: grayscale(1);
+}
+
+.title, .description {
+  text-align: center;
+}
+
+@media screen and (max-width: 1200px) {
+  .itemCardMenu {
+    min-width: unset;
+    max-width: unset;
+    max-height: 90%;
+    width: 75vw;
+  }
+  .itemCardMenu h1 {
+    font-size: var(--h2);
+  }
+  .deleteMenu {
+    min-width: unset;
+    max-width: unset;
+    width: 65vw;
+  }
+  .buttonArray {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .itemCardMenu {
+    min-height: 55%;
+    width: 95vw;
+    padding: 1vw;
+    justify-content: center;
+    gap: 1vh;
+  }
+  .itemCardMenu h1 {
+    font-size: 2.25em;
+  }
+  .buttonArray {
+    margin-top: 2em;
+    width: 80%;
+    flex-direction: column;
+    align-items: center;
+  }
+  .buttonArray button {
+    width: 100%;
+  }
+  .deleteMenu {
+    width: 95vw;
+    padding: 0;
+    min-height: 50%;
+    max-height: 80%;
+  }
+  .deleteMenu h2 {
+    font-size: 2.75em;
+    width: 80%;
+  }
+  .deleteMenu h3 {
+    font-size: 2em;
+    width: 80%;
+  }
+  .deleteButtons {
+    height: fit-content;
+  }
+  .title {
+    font-size: 1.75em;
+  }
+  .description {
+    font-size: 1.75em;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+.yes {
+  background-color: #ffc6c6;
+}
+.no {
+  background-color: #c5ffca;
+}
+.yes:hover {
+  background-color: #ff5152;
+}
+.no:hover {
+  background-color: #51ff60;
+}
 .finishedButton:hover {
   filter: grayscale(0);
+}
+.disabledDelete:hover {
+  filter: grayscale(1);
+}
 }
 
 </style>

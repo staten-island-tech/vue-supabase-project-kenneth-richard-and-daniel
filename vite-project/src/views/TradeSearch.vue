@@ -25,7 +25,15 @@
 
 <script setup lang="ts">
 
-import { ref } from 'vue';
+import { watchLogout } from '@/assets/functions';
+import { sessionStore } from '@/stores/session';
+import { onMounted, ref, watch } from 'vue';
+
+watch(() => sessionStore().session, (newSession) => watchLogout(newSession));
+
+onMounted(() => {
+    watchLogout(sessionStore().session);
+});
 
 const clicked = ref(false);
 const filled = ref("");

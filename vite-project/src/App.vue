@@ -1,23 +1,25 @@
 <template>
-  <header>
+  <header v-if="email != ''">
     <div class="headerDiv">
-      <div class="logo">
-        <img src="/valorant.svg" alt="VALORANT Logo">
-        <div class="logoTitle">
-          <h2>VALORANT Case Opener</h2>
-          <p v-if="email != ''">{{ email }} <button class="account" @click="signout = true"><img src="/exit.svg" alt="Click to sign out of your account"></button></p>
+      <div class="logoBackground">
+        <div class="logo">
+          <img src="/valorant.svg" alt="VALORANT Logo">
+          <div class="logoTitle">
+            <h2>VALORANT Case Opener</h2>
+            <p v-if="email != ''"><span>{{ email }}</span> <button class="account" @click="signout = true"><img src="/exit.svg" alt="Click to sign out of your account"></button></p>
+          </div>
         </div>
       </div>
       <nav class="navBar">
-        <RouterLink to="/" class="lootboxes" :class="{ enabled: route.path == '/', disabled: email == '' }">
+        <RouterLink to="/lootbox" class="navButton lootboxes" :class="{ enabled: route.path == '/lootbox', disabled: email == '' }">
           <img src="/chest.svg" alt="Lootboxes">
           <h3>Lootboxes</h3>
         </RouterLink>
-        <RouterLink to="/inventory" class="inventoryButton" :class="{ enabled: route.path == '/inventory', disabled: email == '' }">
+        <RouterLink to="/inventory" class="navButton inventoryButton" :class="{ enabled: route.path == '/inventory', disabled: email == '' }">
           <img src="/backpack.svg" alt="Inventory">
           <h3>Inventory</h3>
         </RouterLink>
-        <RouterLink to="/trade-search" class="searcher" :class="{ enabled: route.path == '/trade-search', disabled: email == '' }">
+        <RouterLink to="/trade-search" class="navButton searcher" :class="{ enabled: route.path == '/trade-search', disabled: email == '' }">
           <img src="/magnify.svg" alt="Searcher">
           <h3>Trade</h3>
         </RouterLink>
@@ -31,11 +33,9 @@
         <h1>Do you want to sign out?</h1>
         <div class="signoutButtons">
           <button class="yes" @click="logout">
-            Yes, sign out.
             <img src="/check.svg" alt="Click to confirm sign out">
           </button>
           <button class="no" @click="signout = false">
-            No, go back.
             <img src="/cancel.svg" alt="Click to return to game">
           </button>
         </div>
@@ -52,14 +52,14 @@
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { ref, watch, onMounted } from 'vue';
 import { sessionStore } from './stores/session';
+import { clientStore } from '@/stores/client';
+import router from './router';
 
 const signout = ref<boolean> (false);
 const route = ref(useRoute());
 const email = ref<string | undefined> ("");
 
-watch(() => sessionStore().session, (newSession) => {
-  email.value = newSession.email;
-});
+watch(() => sessionStore().session, (newSession) => email.value = newSession.email);
 
 onMounted(() => {
   const storedAuth = localStorage.getItem("sb-toztwtlkcpaxhvmqtbdu-auth-token");
@@ -71,8 +71,14 @@ onMounted(() => {
       token_type: storedAuthJSON.token_type,
       authenticated: true,
       id: storedAuthJSON.user.id,
-      email: storedAuthJSON.user.email
+      email: storedAuthJSON.user.email,
+      newPlayer: false
     });
+
+    const intendedRoute = clientStore().intendedRoute;
+    if (["/", "/login"].includes(intendedRoute)) {
+      router.push("/lootbox");
+    }
   }
 });
 
@@ -83,9 +89,12 @@ function logout (): void {
     token_type: "",
     authenticated: false,
     id: "",
-    email: ""
+    email: "",
+    newPlayer: false
   });
-
+  clientStore().changeInventory([]);
+  
+  clientStore().intendedRoute = String(route.value.name);
   localStorage.removeItem("sb-toztwtlkcpaxhvmqtbdu-auth-token");
 
   signout.value = false;
@@ -118,7 +127,7 @@ function logout (): void {
   width: 40%;
   height: fit-content;
   min-height: 40%;
-  max-height: 80%;
+  max-height: 90%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -127,6 +136,7 @@ function logout (): void {
   padding: 3vh;
   overflow-y: auto;
   color: white;
+  text-align: center;
 }
 
 .signoutButtons {
@@ -145,30 +155,20 @@ function logout (): void {
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  height: 2.65em;
+  height: fit-content;
   width: 35%;
 }
 
 .signoutButtons button img {
   width: 3em;
   height: 3em;
-  margin-top: 1em;
 }
 
 .yes {
-  background-color: #ffc6c6;
+  background-color: #ff5152;
 }
 .no {
-  background-color: #c5ffca;
-}
-
-.yes:hover {
-  background-color: #ff5152;
-  height: 6.75em;
-}
-.no:hover {
   background-color: #51ff60;
-  height: 6.75em;
 }
 
 .signout-enter-active, .signout-leave-active {
@@ -209,9 +209,6 @@ function logout (): void {
   align-items: center;
   justify-content: center;
 }
-.account:hover {
-  background-color: #51ff60;
-}
 .account img {
   width: 3em;
   height: 3em;
@@ -236,7 +233,7 @@ function logout (): void {
 
 header {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 90%, transparent);
-  width: 100%;
+  width: 100vw;
   height: 17em;
   position: fixed;
   z-index: 9999999;
@@ -253,6 +250,11 @@ header {
   margin-top: 2em;
 }
 
+.logoBackground {
+  background: linear-gradient(to bottom, #ff5152, #db0000);
+  padding: 0.2em;
+  border-radius: 5em;
+}
 .logo {
   display: flex;
   align-items: center;
@@ -260,9 +262,10 @@ header {
   padding-left: 7.5em;
   padding-right: 7.5em;
   gap: 5%;
-  background-color: rgb(255, 144, 80);
+  background-color: rgba(12, 24, 36, 0.85);
+  color: white;
   border-radius: 5em;
-  height: 100%;
+  height: 10em;
 }
 .logo h2 {
   margin: 0;
@@ -282,7 +285,7 @@ header {
   width: 70em;
   height: fit-content;
 }
-.navBar > * {
+.navButton {
   margin: 0;
   display: flex;
   gap: 3%;
@@ -300,23 +303,14 @@ header {
   background-color: var(--deepYellow);
   border-radius: 3em;
 }
-.lootboxes:hover {
-  filter: grayscale(0);
-}
 .inventoryButton {
   background-color: var(--cyan);
   border-radius: 3em;
 }
-.inventoryButton:hover {
-  filter: grayscale(0);
-}
 
-.trade {
+.searcher {
   background-color: var(--deepGreen);
   border-radius: 3em;
-}
-.trade:hover {
-  filter: grayscale(0);
 }
 
 .navBar img {
@@ -326,6 +320,108 @@ header {
 
 .enabled {
   filter: grayscale(0);
+}
+
+@media screen and (max-width: 1600px) {
+  .navButton {
+    width: 10em;
+  }
+  .navButton h3 {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .headerDiv {
+    flex-direction: column;
+  }
+
+  .navBar {
+    margin-top: 1em;
+  }
+  .navButton {
+    width: 19.5em;
+  }
+  .navButton h3 {
+    display: block;
+  }
+
+  header {
+    height: 25em;
+    position: absolute;
+  }
+  .signoutMenu {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .logo {
+    padding: 0;
+    width: 95vw;
+  }
+  .logo img {
+    max-width: 1px;
+    max-height: 1px;
+    display: none;
+  }
+  .logoTitle h2 {
+    font-size: var(--h3);
+  }
+  .logoTitle p {
+    width: fit-content;
+  }
+  .logoTitle p span {
+    font-size: 1px;
+    display: none;
+  }
+  .logoTitle p button {
+    width: 25vw;
+    height: fit-content;
+    padding: 1vw;
+  }
+  .logoTitle p button img {
+    display: unset;
+    max-width: unset;
+    max-height: unset;
+  }
+  .navButton {
+    width: 25vw;
+    padding: 0.5vw;
+  }
+  .navButton h3 {
+    display: none;
+  }
+  .signoutMenu h1 {
+    font-size: var(--h2);
+  }
+  .navBar {
+    width: 95vw;
+  }
+  .signoutButtons button {
+    width: 45%;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+.yes {
+  background-color: #ffc6c6;
+}
+.no {
+  background-color: #c5ffca;
+}
+.yes:hover {
+  background-color: #ff5152;
+}
+.no:hover {
+  background-color: #51ff60;
+}
+.account:hover {
+  background-color: #51ff60;
+}
+.navButton:hover {
+  filter: grayscale(0);
+}
 }
 
 </style>
