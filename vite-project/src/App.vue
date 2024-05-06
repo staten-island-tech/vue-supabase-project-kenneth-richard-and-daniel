@@ -71,11 +71,12 @@ onMounted(() => {
       token_type: storedAuthJSON.token_type,
       authenticated: true,
       id: storedAuthJSON.user.id,
-      email: storedAuthJSON.user.email
+      email: storedAuthJSON.user.email,
+      newPlayer: false
     });
 
     const intendedRoute = clientStore().intendedRoute;
-    if (["/", "/login"].includes(intendedRoute) || !intendedRoute) {
+    if (["/", "/login"].includes(intendedRoute)) {
       router.push("/lootbox");
     }
   }
@@ -88,9 +89,11 @@ function logout (): void {
     token_type: "",
     authenticated: false,
     id: "",
-    email: ""
+    email: "",
+    newPlayer: false
   });
-
+  clientStore().changeInventory([]);
+  
   clientStore().intendedRoute = String(route.value.name);
   localStorage.removeItem("sb-toztwtlkcpaxhvmqtbdu-auth-token");
 

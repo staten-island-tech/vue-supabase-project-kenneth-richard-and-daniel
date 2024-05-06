@@ -9,7 +9,8 @@ export const sessionStore = defineStore("session", () => {
     token_type: "",
     authenticated: false,
     id: "",
-    email: ""
+    email: "",
+    newPlayer: false
   });
 
   function changeSession (newSession: SessionData) {

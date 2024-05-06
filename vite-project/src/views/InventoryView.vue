@@ -1,10 +1,16 @@
 <template>
 
   <Transition name="itemCard">
-      <div v-if="showItemCard" class="itemCardBackground">
-        <InventoryCard :item="currentItem" @close="showItemCard = false" />
-      </div>
-    </Transition>
+    <div v-if="showItemCard" class="itemCardBackground">
+      <InventoryCard :item="currentItem" @close="showItemCard = false" />
+    </div>
+  </Transition>
+
+  <Transition name="itemCard">
+    <div v-if="newPlayerCheck" class="itemCardBackground">
+      <NewPlayerCard @close="newPlayerCheck = false" />
+    </div>
+  </Transition>
   
   <div class="sort">
       <button class="reverseButton" @click="reverseInventory">
@@ -38,8 +44,8 @@
       </div>
 
       <div v-if="inventory.length == 0" class="wompwomp">
-          <h2>You don't have any items. L Bozo</h2>
-          <h3>Open some boxes to get started! :D</h3>
+          <h2>No items match your search.</h2>
+          <h3>Try searching for something else!</h3>
       </div>
   </div>
 
@@ -55,6 +61,7 @@ import type { Inventory, NewWeapon, WeaponSkin } from '@/assets/types';
 import { clientStore } from '@/stores/client';
 import InventoryCard from '@/components/InventoryCard.vue';
 import { watchLogout } from '@/assets/functions';
+import NewPlayerCard from '@/components/NewPlayerCard.vue';
 
 type ApiData = {
     skin_id: number;
@@ -81,6 +88,7 @@ const currentItem = ref<WeaponSkin> ({
   date: ""
 });
 const searchParam = ref<string> ("");
+const newPlayerCheck = ref<boolean> (false);
 
 let originalInventory: Inventory = [];
 let mutatedInventory: Inventory = [];
@@ -96,6 +104,7 @@ onMounted(async () => {
     sortOption.value = clientStore().sort;
     sortReverse.value = clientStore().reversed;
     showLockedBool.value = clientStore().hidden;
+    newPlayerCheck.value = sessionStore().session.newPlayer;
     getInventory();
 });
 

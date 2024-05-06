@@ -90,10 +90,11 @@ async function handleAuth (type: "login" | "signup"): Promise<void> {
       authenticated: true,
       id: data.user.id,
       email: data.user.email,
+      newPlayer: type == "signup" ? true : false
      });
     
      const intendedRoute = clientStore().intendedRoute;
-    if (intendedRoute != "") {
+    if (intendedRoute != "" && type == "login") {
       router.push(intendedRoute);
     } else {
       router.push("/lootbox");

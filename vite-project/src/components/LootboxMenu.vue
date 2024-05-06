@@ -102,6 +102,7 @@ filtered.value = combinedSkins;
 onMounted(async () => {
   loadChances.value = false;
   setWheel();
+  checkNewPlayer();
   loadChances.value = true;
 
   try {
@@ -114,6 +115,35 @@ onMounted(async () => {
     }
   }
 });
+
+async function checkNewPlayer(): Promise<void> {
+  if (sessionStore().session.newPlayer == false) return;
+  if (clientStore().currentInventory.length >= 20) {
+    sessionStore().session.newPlayer = false;
+    return;
+  };
+
+  for (let i = 0; i <= 19; i++) {
+    const filtered = i == 0 ? combinedSkins.filter((item) => item.rarity == "Legendary") : combinedSkins.filter((item) => !["Legendary", "Godly"].includes(item.rarity));
+    const randomSkin = filtered[getRandomIntInclusive(0, filtered.length - 1)];
+    try {
+      const { error } = await supabase.from('inventory').insert({
+        id: sessionStore().session.id,
+        skin_name: randomSkin.displayName,
+        date: new Date(),
+      });
+      const skin = combinedSkins.find((item) => item.displayName == outcome.value.displayName);
+      if (skin) {
+        clientStore().currentInventory.push(skin);
+      }
+      if (error) throw error;
+    } catch (error: any) {
+      if (error instanceof Error) {
+        alert(error.message);
+      }
+    }
+  }
+}
 
 watch(() => clientStore().currentPity, (newPity: number) => {
   if (newPity >= 15) {
