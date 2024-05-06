@@ -59,7 +59,7 @@ import { ref, onMounted, watch } from 'vue';
 import { delay, getRandomIntInclusive } from '@/assets/functions';
 import LootboxChances from '@/components/LootboxChances.vue';
 import PityBar from './PityBar.vue';
-import type { NewWeapon, UserProfile, WeaponSkin } from '@/assets/types';
+import type { NewWeapon, WeaponSkin } from '@/assets/types';
 import { supabase } from '@/lib/supabaseClient';
 import { sessionStore } from '@/stores/session';
 import { clientStore } from '@/stores/client';
@@ -84,6 +84,7 @@ const outcome = ref<WeaponSkin> ({
   wallpaper: "",
   rarity: "",
   inventoryCount: 1,
+  date: ""
 });
 const loadChances = ref<boolean> (false);
 
@@ -206,7 +207,7 @@ async function rollAnimation (roll: number): Promise<void> {
 }
 
 async function insertData (): Promise<void> {
-  let userProfile: UserProfile = {
+  let userProfile = {
     id: sessionStore().session.id,
     boxes_since_last: 0,
   };

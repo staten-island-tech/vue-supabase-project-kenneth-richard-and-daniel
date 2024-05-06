@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="renameThisLaterOrDeleteIDK">
         <div id="trade-box">
             <h3>Trade Requests Avaliable</h3>
         </div>
