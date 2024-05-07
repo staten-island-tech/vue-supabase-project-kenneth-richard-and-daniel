@@ -6,19 +6,33 @@
         <Transition name="create">
             <div class="createBackground" v-if="clicked">
                 <label for="bombaclad" id="bombaclad">Select Weapon You're Trading</label>
-                <input type="text" id="bombaclad2" v-model="filled"><br>
+                <button id="bombaclad2" @click="clicked2 = true">+</button> 
+                <Transition name="create">
+                  <div class="createBackground" v-if="clicked2">
+                    <div class="search">
+                      <h3>Search</h3>
+                      <input type="text" placeholder="Type to narrow search" @input="searchInventory">
+                    </div>
+                    <button id="exit2" @click="clicked2 = false">Exit</button>
+                  </div>
+                </Transition>
                 <img src="/tradeTwo.svg" alt="arrow" id="arrow2">
                 <label for="bombaclad" id="bombaclad">Select Weapon You Want</label>
-                <input type="text" id="bombaclad2" v-model="filled2"><br> 
+                <button id="bombaclad" @click="clicked3 = true">+</button> 
+                <Transition name="create">
+                  <div class="createBackground" v-if="clicked3">
+                    <button id="exit2" @click="clicked3 = false">Exit</button>
+                  </div>
+                </Transition>
                 <div class="buttonArray">
                     <button id="publish" @click="create">Publish</button>
-                    <button id="exit" @click="exitOut">Quit</button>
+                    <button id="exit" @click="clicked = false">Quit</button>
                 </div>
             </div>
 
         </Transition>
             <div class="button">
-                <button class="create" @click="makeappear">Create a Trade Request</button>
+                <button class="create" @click="clicked = true">Create a Trade Request</button>
             </div>
     </div>
 </template>
@@ -36,16 +50,12 @@ onMounted(() => {
 });
 
 const clicked = ref(false);
+const clicked2 = ref(false);
+const clicked3 = ref(false);
+const searchParam = ref<string> ("");
+  const inventory = ref<Inventory> ([]);
 const filled = ref("");
 const filled2 = ref("");
-
-function makeappear(){
- clicked.value = true;
-}
-
-function exitOut(){
-    clicked.value = false;
-}
 
 function create() {
     if (!filled.value && !filled2.value) {
@@ -53,13 +63,15 @@ function create() {
     }
 }
 
+function searchInventory (event: Event): void {
+  const inputValue = (event.target as HTMLInputElement).value;
+  searchParam.value = inputValue;
+  inventory.value = mutatedInventory.filter((item) => item.displayName.toLowerCase().includes(inputValue.toLowerCase()));
+}
+
 </script>
 
 <style scoped>
-#exit {
-
-}
-
 #arrow2 {
     width: 8em;
     height: 8em;
@@ -115,11 +127,11 @@ function create() {
 }
 
 .create-enter-active, .create-leave-active {
-  transition: all 0.5s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .create-leave-active {
-  transition-delay: 0.15s;
+  transition-delay: 0.07s;
 }
 
 .create-enter-from,
@@ -129,11 +141,11 @@ function create() {
 
 .create-enter-active .createMenu,
 .create-leave-active .createMenu { 
-  transition: all 0.25s ease-in-out;
+  transition: all 0.07s ease-in-out;
 }
 
 .create-enter-active .createMenu {
-  transition-delay: 0.15s;
+  transition-delay: 0.07s;
 }
 
 .create-enter-from .createMenu,
