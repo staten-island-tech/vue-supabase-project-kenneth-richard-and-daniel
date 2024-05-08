@@ -1,12 +1,12 @@
 <template>
-  <header v-if="email != ''">
+  <header v-if="!['/', '/login'].includes(route.fullPath)">
     <div class="headerDiv">
       <div class="logoBackground">
         <div class="logo">
           <img src="/valorant.svg" alt="VALORANT Logo">
           <div class="logoTitle">
             <h2>VALORANT Case Opener</h2>
-            <p v-if="email != ''"><span>{{ email }}</span> <button class="account" @click="signout = true"><img src="/exit.svg" alt="Click to sign out of your account"></button></p>
+            <p><span>{{ email }}</span> <button class="account" @click="signout = true"><img src="/exit.svg" alt="Click to sign out of your account"></button></p>
           </div>
         </div>
       </div>
@@ -54,6 +54,7 @@ import { ref, watch, onMounted } from 'vue';
 import { sessionStore } from './stores/session';
 import { clientStore } from '@/stores/client';
 import router from './router';
+import { delay } from './assets/functions';
 
 const signout = ref<boolean> (false);
 const route = ref(useRoute());
@@ -76,7 +77,7 @@ onMounted(() => {
     });
 
     const intendedRoute = clientStore().intendedRoute;
-    if (["/", "/login"].includes(intendedRoute)) {
+    if (["/", "/login"].includes(intendedRoute) || ["/", "/login"].includes(route.value.fullPath)) {
       router.push("/lootbox");
     }
   }

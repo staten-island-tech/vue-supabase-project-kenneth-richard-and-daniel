@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { supabase } from '@/lib/supabaseClient';
 import { sessionStore } from '@/stores/session';
 import { getRandomIntInclusive } from '@/assets/functions';
