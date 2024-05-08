@@ -44,7 +44,7 @@
       </div>
 
       <div v-if="inventory.length == 0" class="wompwomp">
-          <h2>No items match your search.</h2>
+          <h2>No items match your search. L Bozo</h2>
           <h3>Try searching for something else!</h3>
       </div>
   </div>
