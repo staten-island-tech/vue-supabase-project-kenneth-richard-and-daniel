@@ -9,13 +9,13 @@
         <button id="bombaclad2" @click="clicked2 = true">+</button>
         <Transition name="create">
           <div class="createBackground" v-if="clicked2">
-            <div class="search">
-              <h3>Search</h3>
+            <div>
+              <h3 class="search">Search</h3>
               <input type="text" placeholder="Type to narrow search" @input="searchInventory" />
               <div class="inventory">
                 <Transition name="itemCard">
                   <div v-if="showItemCard" class="itemCardBackground">
-                    <InventoryCard :item="currentItem" @close="showItemCard = false" />
+                    <TradeCard :item="currentItem" @close="showItemCard = false" />
                   </div>
                 </Transition>
                 <div
@@ -78,7 +78,7 @@ import { sessionStore } from '@/stores/session';
 import { getSkins } from '@/stores/lootboxes';
 import type { Inventory, NewWeapon, WeaponSkin } from '@/assets/types';
 import { clientStore } from '@/stores/client';
-import InventoryCard from '@/components/InventoryCard.vue';
+import TradeCard from '@/components/TradeCard.vue';
 import { watchLogout } from '@/assets/functions';
 
 
@@ -251,6 +251,15 @@ async function getData (): Promise<ApiData[]> {
 </script>
 
 <style scoped>
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  gap: 5%;
+  margin-bottom: 4em;
+}
+
 .itemName {
   font-size: 2em;
 }
@@ -262,7 +271,43 @@ async function getData (): Promise<ApiData[]> {
 
 .inventory {
   display: flex;
-  justify-content:space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5%;
+  width: 90vw;
+}
+
+.inventoryItem {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+  width: 22.5vw;
+  height: 46vh;
+  font-size: 1rem;
+  border-radius: 15px;
+  padding-top:3vh;
+  padding-bottom: 3vh;
+  margin: 7.5vh;
+  box-shadow: 10px 10px;
+  text-align: center;
+  text-emphasis-color: black;
+  background-color: rgba(248, 205, 103, 0.781);
+}
+.inventoryItem h2 {
+    margin: 0;
+    font-size: 2.5em;
+    width: 85%;
+}
+.inventoryItem h3 {
+    margin: 0;
+}
+
+.inventoryItemImg {
+  width: 50em;
+  height: 20em;
 }
 
 #arrow2 {
