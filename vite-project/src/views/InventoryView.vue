@@ -134,14 +134,17 @@ async function sortInventory (sortBy: "rarity" | "weapon" | "date"): Promise<voi
     clientStore().sort = sortBy;
     sortOption.value = sortBy;
 
-    const newInventory: Inventory = [];
+    let newInventory: Inventory = [];
 
     if (sortBy == "rarity") {
-        newInventory.push(...originalInventory.filter((item) => item.rarity == "Common"));
-        newInventory.push(...originalInventory.filter((item) => item.rarity == "Rare"));
-        newInventory.push(...originalInventory.filter((item) => item.rarity == "Epic"));
-        newInventory.push(...originalInventory.filter((item) => item.rarity == "Legendary"));
-        newInventory.push(...originalInventory.filter((item) => item.rarity == "Godly"));
+        const rarityOrder: Record<string, number> = {
+          Godly: 5,
+          Legendary: 4,
+          Epic: 3,
+          Rare: 2,
+          Common: 1
+        }
+        newInventory = [...originalInventory].sort((a, b) => rarityOrder[a.rarity] - rarityOrder[b.rarity]);
         inventory.value = sortReverse.value == true ? [...newInventory].reverse() : newInventory;
 
     } else if (sortBy == "weapon") {
