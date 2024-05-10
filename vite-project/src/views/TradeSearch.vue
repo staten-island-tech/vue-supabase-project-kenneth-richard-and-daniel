@@ -205,7 +205,6 @@ async function getInventory (): Promise<void> {
 
     for (let skin of inventorySkins) {
         const found: WeaponSkin | undefined = combinedSkins.find((item) => skin == item.displayName);
-
         if (found) {
           const foundInInventory: ApiData | undefined = inventoryUser.find((item) => item.skin_name == found.displayName);
           if (foundInInventory) {
@@ -270,6 +269,11 @@ async function getData (): Promise<ApiData[]> {
 }
 
 .inventory {
+  overflow-x:hidden;
+  overflow-y:auto;
+  padding-top: 10%;
+  min-height:60%;
+  max-height: 60%;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -285,7 +289,7 @@ async function getData (): Promise<ApiData[]> {
   align-items: center;
   flex-direction: column;
   width: 18vw;
-  height: 10vh;
+  height: 18vh;
   font-size: 1rem;
   border-radius: 15px;
   padding-top:3vh;
