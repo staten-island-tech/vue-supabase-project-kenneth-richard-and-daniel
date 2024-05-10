@@ -284,8 +284,8 @@ async function getData (): Promise<ApiData[]> {
   justify-content: space-evenly;
   align-items: center;
   flex-direction: column;
-  width: 22.5vw;
-  height: 46vh;
+  width: 18vw;
+  height: 10vh;
   font-size: 1rem;
   border-radius: 15px;
   padding-top:3vh;
