@@ -250,6 +250,430 @@ async function getData (): Promise<ApiData[]> {
 </script>
 
 <style scoped>
+.createBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  z-index: 99999999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.createMenu {
+  min-width: 75em;
+  max-width: 125em;
+  padding: 20px;
+  border-radius: 3vh;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  max-height: 80%;
+  min-height: 30%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: black;
+}
+
+.createImg {
+  max-width: 40%;
+}
+.createImgBig {
+  max-width: 90%;
+  min-width: 70%;
+}
+
+.create-enter-active,
+.create-leave-active {
+  transition: all 0.3s ease-in-out;
+}
+
+.create-leave-active {
+  transition-delay: 0.07s;
+}
+
+.create-enter-from,
+.create-leave-to {
+  opacity: 0;
+}
+
+.create-enter-active .createMenu,
+.create-leave-active .createMenu {
+  transition: all 0.07s ease-in-out;
+}
+
+.create-enter-active .createMenu {
+  transition-delay: 0.07s;
+}
+
+.create-enter-from .createMenu,
+.create-leave-to .createMenu {
+  transform: scale(1.05);
+  opacity: 0.001;
+}
+
+.createText {
+  position: absolute;
+  display: none;
+  margin: 0;
+}
+
+.createText:hover {
+  display: block;
+}
+
+.creatingText {
+  position: absolute;
+  margin: 0;
+}
+
+#trade-box {
+  margin-top: 17em;
+  background-color: rgb(6, 146, 99);
+  border-radius: 15px;
+}
+
+/*here*/
+
+
+.itemCardBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  z-index: 99999999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.itemCard-enter-active, .itemCard-leave-active {
+  transition: all 0.5s ease-in-out;
+}
+
+.itemCard-leave-active {
+  transition-delay: 0.15s;
+}
+
+.itemCard-enter-from,
+.itemCard-leave-to {
+  opacity: 0;
+}
+
+.itemCard-enter-active .itemCardMenu,
+.itemCard-leave-active .itemCardMenu { 
+  transition: all 0.25s ease-in-out;
+}
+
+.itemCard-enter-active .itemCardMenu {
+  transition-delay: 0.15s;
+}
+
+.itemCard-enter-from .itemCardMenu,
+.itemCard-leave-to .itemCardMenu {
+  transform: scale(1.05);
+  opacity: 0.001;
+}
+
+.wompwomp {
+  background-color: #ff5050;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1em;
+  border-radius: 5em;
+}
+
+.sort {
+  margin-top: 19em;
+  margin-bottom: 1em;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5%;
+}
+
+.reverseButton, .hideButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 6.5em;
+  height: 5em;
+  border-radius: 2.5em;
+  overflow: hidden;
+  background-color: var(--pastelYellow);
+  transition: all 0.5s;
+}
+.hideButton {
+  background-color: var(--cyan);
+}
+.notHidden {
+  filter: grayscale(1);
+}
+.lockedItem {
+  filter: grayscale(0.95);
+}
+.reverseButton img, .hideButton img {
+  width: 3.5em;
+  height: 3.5em;
+  transition: all 0.5s;
+}
+.reversed {
+  transform: rotate(180deg);
+}
+
+.sortButton {
+  width: 30%;
+  height: 3em;
+  font-size: 2em;
+  border-radius: 1.25em;
+  background-color: var(--deepGreen);
+  filter: grayscale(1);
+  transition: all 0.5s;
+  color: black;
+}
+
+.enabled {
+  filter: grayscale(0);
+  color: black;
+}
+
+.inventory {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5%;
+  width: 90vw;
+}
+
+.inventoryItem {
+  width: 20%;
+  min-height: 30em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1%;
+  text-align: center;
+  gap: 2em;
+  border-radius: 3em;
+  transition: transform 1s;
+}
+.inventoryItem h2 {
+    margin: 0;
+    font-size: 2.5em;
+    width: 85%;
+}
+.inventoryItem h3 {
+    margin: 0;
+}
+
+.inventoryItemImg {
+  max-width: 60%;
+  max-height: 60%;
+}
+.karambit {
+  max-width: 40%;
+  max-height: 40%;
+}
+
+.common {
+  background-color: var(--common);
+}
+.rare {
+  background-color: var(--rare);
+}
+.epic {
+  background-color: var(--epic);
+}
+.legendary {
+  background-color: var(--legendary);
+}
+.godly {
+  background: var(--godly);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  gap: 5%;
+  margin-bottom: 4em;
+}
+.search h3 {
+  margin: 0;
+  color: white;
+}
+.search input {
+  width: 15em;
+  font-size: 2em;
+  padding: 0.25em;
+  border-radius: 0.8em;
+  color: black;
+  background-color: #cacaca;
+  border-style: solid;
+  text-align: center;
+}
+
+.search input::placeholder {
+  color: black;
+  opacity: 1;
+}
+
+.search input:focus {
+  outline: none;
+  border-color: #ff5050;
+}
+
+@media screen and (max-width: 1600px) {
+  .sort {
+    width: 65%;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .sort {
+    margin-top: 25em;
+    width: 85%;
+  }
+  .inventoryItem {
+    width: 30%;
+    min-height: 25em;
+  }
+  .inventoryItem h2 {
+    font-size: 2.25em;
+  }
+
+}
+
+@media screen and (max-width: 800px) {
+  .sort {
+    flex-wrap: wrap;
+    width: 90vw;
+  }
+  .sortButton, .reverseButton {
+    width: 45%;
+  }
+  .hideButton {
+    display: none;
+    width: 1px;
+    height: 1px;
+  }
+  .search {
+    width: 90vw;
+  }
+  .search h3 {
+    display: none;
+    width: 1px;
+    height: 1px;
+    font-size: 1px;
+  }
+  .search input {
+    width: 100%;
+  }
+  .inventory {
+    gap: 5%;
+    margin-bottom: 5em;
+  }
+  .inventoryItem {
+    width: 45%;
+  }
+  .inventoryItem h2 {
+    font-size: 1.75em;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .sortButton span {
+    display: none;
+  }
+  .inventoryItem {
+    width: 90%;
+    min-height: 17.5em;
+  }
+  .inventoryItem img {
+    max-width: 40%;
+    max-height: 40%;
+  }
+  .inventoryItem h3 {
+    font-size: 1.5em;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+.reverseButton:hover, .hideButton:hover {
+  transform: scale(1.1);
+}
+.reverseButton:hover img {
+  transform: rotate(180deg);
+}
+.reverseButton:hover .reversed {
+  transform: rotate(0deg);
+}
+.sortButton:hover {
+  filter: grayscale(0);
+}
+.inventoryItem:hover {
+  transform: scale(1.05);
+}
+}
+/*.itemCardBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  z-index: 99999999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.itemCard-enter-active, .itemCard-leave-active {
+  transition: all 0.5s ease-in-out;
+}
+
+.itemCard-leave-active {
+  transition-delay: 0.15s;
+}
+
+.itemCard-enter-from,
+.itemCard-leave-to {
+  opacity: 0;
+}
+
+.itemCard-enter-active .itemCardMenu,
+.itemCard-leave-active .itemCardMenu { 
+  transition: all 0.25s ease-in-out;
+}
+
+.itemCard-enter-active .itemCardMenu {
+  transition-delay: 0.15s;
+}
+
+.itemCard-enter-from .itemCardMenu,
+.itemCard-leave-to .itemCardMenu {
+  transform: scale(1.05);
+  opacity: 0.001;
+}
+
+
 .search {
   display: flex;
   align-items: center;
@@ -263,17 +687,12 @@ async function getData (): Promise<ApiData[]> {
   font-size: 2em;
 }
 
-.inventoryItemImg {
-  height: 10px;
-  width: 10px;
-}
-
 .inventory {
   overflow-x:hidden;
   overflow-y:auto;
-  padding-top: 10%;
-  min-height:60%;
-  max-height: 60%;
+  padding-top: 50%;
+  min-height:50%;
+  max-height: 50%;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -281,6 +700,23 @@ async function getData (): Promise<ApiData[]> {
   gap: 1.5%;
   width: 90vw;
 }
+
+.common {
+  background-color: var(--common);
+}
+.rare {
+  background-color: var(--rare);
+}
+.epic {
+  background-color: var(--epic);
+}
+.legendary {
+  background-color: var(--legendary);
+}
+.godly {
+  background: var(--godly);
+}
+
 
 .inventoryItem {
   display: flex;
@@ -300,6 +736,7 @@ async function getData (): Promise<ApiData[]> {
   text-emphasis-color: black;
   background-color: rgba(248, 205, 103, 0.781);
 }
+
 .inventoryItem h2 {
     margin: 0;
     font-size: 2.5em;
@@ -412,4 +849,103 @@ async function getData (): Promise<ApiData[]> {
   position: absolute;
   margin: 0;
 }
+
+.inventoryItemImg {
+  max-width: 60%;
+  max-height: 60%;
+}
+
+@media screen and (max-width: 1600px) {
+  .sort {
+    width: 65%;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .sort {
+    margin-top: 25em;
+    width: 85%;
+  }
+  .inventoryItem {
+    width: 30%;
+    min-height: 25em;
+  }
+  .inventoryItem h2 {
+    font-size: 2.25em;
+  }
+
+}
+
+@media screen and (max-width: 800px) {
+  .sort {
+    flex-wrap: wrap;
+    width: 90vw;
+  }
+  .sortButton, .reverseButton {
+    width: 45%;
+  }
+  .hideButton {
+    display: none;
+    width: 1px;
+    height: 1px;
+  }
+  .search {
+    width: 90vw;
+  }
+  .search h3 {
+    display: none;
+    width: 1px;
+    height: 1px;
+    font-size: 1px;
+  }
+  .search input {
+    width: 100%;
+  }
+  .inventory {
+    gap: 5%;
+    margin-bottom: 5em;
+  }
+  .inventoryItem {
+    width: 45%;
+  }
+  .inventoryItem h2 {
+    font-size: 1.75em;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .sortButton span {
+    display: none;
+  }
+  .inventoryItem {
+    width: 90%;
+    min-height: 17.5em;
+  }
+  .inventoryItem img {
+    max-width: 40%;
+    max-height: 40%;
+  }
+  .inventoryItem h3 {
+    font-size: 1.5em;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+.reverseButton:hover, .hideButton:hover {
+  transform: scale(1.1);
+}
+.reverseButton:hover img {
+  transform: rotate(180deg);
+}
+.reverseButton:hover .reversed {
+  transform: rotate(0deg);
+}
+.sortButton:hover {
+  filter: grayscale(0);
+}
+.inventoryItem:hover {
+  transform: scale(1.05);
+}
+}*/
+
 </style>
