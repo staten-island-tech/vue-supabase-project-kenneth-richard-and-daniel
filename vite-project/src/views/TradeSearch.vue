@@ -5,14 +5,14 @@
     </div>
     <Transition name="create">
       <div class="createBackground" v-if="clicked">
-        <label for="bombaclad" id="bombaclad">Select Weapon You're Trading</label>
+        <label for="bombaclad2" id="bombaclad">Select Weapon You're Trading</label>
         <button id="bombaclad2" @click="clicked2 = true">+</button>
         <Transition name="create">
           <div class="createBackground" v-if="clicked2">
             <div>
-              <h3 class="search">Search</h3>
-              <input type="text" placeholder="Type to narrow search" @input="searchInventory" />
               <div class="inventory">
+                <h3 class="search">Search</h3>
+                <input type="text" placeholder="Type to narrow search" @input="searchInventory" />
                 <Transition name="itemCard">
                   <div v-if="showItemCard" class="itemCardBackground">
                     <TradeCard :item="currentItem" @close="showItemCard = false" />
@@ -51,8 +51,8 @@
           </div>
         </Transition>
         <img src="/tradeTwo.svg" alt="arrow" id="arrow2" />
-        <label for="bombaclad" id="bombaclad">Select Weapon You Want</label>
-        <button id="bombaclad" @click="clicked3 = true">+</button>
+        <label for="bombaclad2" id="bombaclad">Select Weapon You Want</label>
+        <button id="bombaclad2" @click="clicked3 = true">+</button>
         <Transition name="create">
           <div class="createBackground" v-if="clicked3">
             <button id="exit2" @click="clicked3 = false">Exit</button>
@@ -250,13 +250,22 @@ async function getData (): Promise<ApiData[]> {
 </script>
 
 <style scoped>
+#bombaclad{
+  font-size: 2em;
+}
+
+#arrow2{
+  height: 15%;
+  width: 15%;
+}
+
 .createBackground {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(104, 0, 0, 0.85);
   overflow: hidden;
   z-index: 99999999;
   display: flex;
@@ -450,6 +459,11 @@ async function getData (): Promise<ApiData[]> {
 }
 
 .inventory {
+  overflow-x:hidden;
+  overflow-y:auto;
+  padding-top: 15%;
+  /*min-height:50%;*/
+  max-height: 50%;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
