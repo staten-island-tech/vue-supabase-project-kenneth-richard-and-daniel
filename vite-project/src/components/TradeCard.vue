@@ -31,9 +31,9 @@
       <h3 class="description" v-else>You have not unlocked this item yet!</h3>
       <h3 class="description" v-if="item.inventoryCount != 0">You have: <span>{{ item.inventoryCount }}</span></h3>
       <div class="buttonArray">
-        <button class="finishedButton deleteButton" @click="openDeleteMenu" :class="{ disabledDelete: item.inventoryCount == 0 }">
-          <img src="/trash.svg" alt="Click to delete all of this item">
-          <h3>Delete All</h3>
+        <button class="finishedButton deleteButton" @click="inputItem" :class="{ disabledDelete: item.inventoryCount == 0 }">
+          <img src="/select.svg" alt="Click to Select">
+          <h3>Select Item</h3>
         </button>
         <button class="finishedButton closeButton" @click="closeCard">
           <img src="/cancel.svg" alt="Click to close this card">
@@ -52,6 +52,8 @@ import { clientStore } from '@/stores/client';
 import { sessionStore } from '@/stores/session';
 import { ref } from 'vue';
 
+
+
 type Props = {
     item: WeaponSkin;
 }
@@ -61,9 +63,10 @@ const deleteMenu = ref<boolean> (false);
 
 const emit = defineEmits(["close"]);
 
-function openDeleteMenu (): void {
-  if (props.item.inventoryCount != 0) deleteMenu.value = true;
-}
+const selectedItems = ref<any>([]);
+
+const inputItem = 
+  selectedItems.value.push(props.item);
 
 function closeCard (): void {
   emit("close");
@@ -71,7 +74,11 @@ function closeCard (): void {
 
 async function deleteItem (item: WeaponSkin): Promise<void> {
   try {
-    const { error } = await supabase.from("inventory").delete().eq("id", sessionStore().session.id).eq("skin_name", item.displayName);
+    const { error } = await supabase.from("trades").insert({
+      owner_id: sessionStore().session.id,
+      items_give: 
+
+    })
     if (error) throw error;
 
     clientStore().changeInventory(clientStore().currentInventory.filter((inventoryItem) => inventoryItem != item));
@@ -163,11 +170,11 @@ async function deleteItem (item: WeaponSkin): Promise<void> {
   height: 3em;
 }
 
-.yes {
-  background-color: #ff5152;
-}
 .no {
-  background-color: #51ff60;
+  background-color: #5aa712;
+}
+.yes {
+  background-color: rgb(167, 11, 11);
 }
 
 .delete-enter-active, .delete-leave-active {
@@ -287,8 +294,8 @@ async function deleteItem (item: WeaponSkin): Promise<void> {
   text-decoration: none;
 }
 
-.deleteButton {background-color: #ff5152}
-.closeButton {background-color: var(--deepGreen)}
+.closeButton {background-color: #ff5152}
+.deleteButton {background-color: var(--deepGreen)}
 
 .finishedButton h3 {
   margin: 0;

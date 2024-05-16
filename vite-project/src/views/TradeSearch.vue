@@ -11,8 +11,8 @@
           <div class="createBackground" v-if="clicked2">
             <div>
               <div class="inventory">
-                <h3 class="search">Search</h3>
-                <input type="text" placeholder="Type to narrow search" @input="searchInventory" />
+                <h3 class="search">Search</h3> 
+                <input type="text" placeholder="Type to narrow search" @input="searchInventory" /> 
                 <Transition name="itemCard">
                   <div v-if="showItemCard" class="itemCardBackground">
                     <TradeCard :item="currentItem" @close="showItemCard = false" />
@@ -250,6 +250,7 @@ async function getData (): Promise<ApiData[]> {
 </script>
 
 <style scoped>
+
 #bombaclad{
   font-size: 2em;
 }
@@ -413,17 +414,7 @@ async function getData (): Promise<ApiData[]> {
   gap: 5%;
 }
 
-.reverseButton, .hideButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 6.5em;
-  height: 5em;
-  border-radius: 2.5em;
-  overflow: hidden;
-  background-color: var(--pastelYellow);
-  transition: all 0.5s;
-}
+
 .hideButton {
   background-color: var(--cyan);
 }
@@ -461,7 +452,7 @@ async function getData (): Promise<ApiData[]> {
 .inventory {
   overflow-x:hidden;
   overflow-y:auto;
-  padding-top: 15%;
+  padding-top: 27%;
   /*min-height:50%;*/
   max-height: 50%;
   display: flex;
@@ -520,6 +511,7 @@ async function getData (): Promise<ApiData[]> {
 }
 
 .search {
+  margin: 15em;
   display: flex;
   align-items: center;
   justify-content: center;
