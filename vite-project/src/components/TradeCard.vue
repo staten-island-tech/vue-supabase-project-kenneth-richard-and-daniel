@@ -1,5 +1,5 @@
 <template>
-    <Transition name="delete">
+ <Transition name="delete">
     <div class="deleteBackground" v-if="deleteMenu">
       <div class="deleteMenu">
         <h2>Are you sure you want to delete this item?</h2>
@@ -8,7 +8,7 @@
           legendaryText: item.rarity == 'Legendary', godlyText: item.rarity == 'Godly' }">
             {{ item.displayName }}
           </span> 
-          will be removed.</h3>
+          will be removed.</h3> 
         <h3><strong style="color: #ff5050; font-size: 1.25em;">This action is unrecoverable!</strong></h3>
         <div class="deleteButtons">
           <button class="yes" @click="deleteItem(item)">
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-  </Transition>
+  </Transition> 
   
   <div class="itemCardMenu" :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare',
   epic: item.rarity == 'Epic', legendary: item.rarity == 'Legendary', godly: item.rarity == 'Godly' }">
@@ -63,10 +63,12 @@ const deleteMenu = ref<boolean> (false);
 
 const emit = defineEmits(["close"]);
 
-const selectedItems = ref<any>([]);
+const selectedItems = ref<WeaponSkin[]>([]);
 
-const inputItem = 
+function inputItem() {
   selectedItems.value.push(props.item);
+  emit("Select Item");
+}  
 
 function closeCard (): void {
   emit("close");
@@ -76,8 +78,9 @@ async function deleteItem (item: WeaponSkin): Promise<void> {
   try {
     const { error } = await supabase.from("trades").insert({
       owner_id: sessionStore().session.id,
-      items_give: 
-
+      items_give: selectedItems.value.map((somethingelse) => somethingelse.displayName),
+      items_want: [],
+      date: "",
     })
     if (error) throw error;
 
