@@ -27,9 +27,6 @@
       <h1 class="title">{{ item.displayName }}</h1>
       <h3 class="title">{{ item.rarity }} {{ item.defaultName }}</h3>
       <img :src="item.displayIcon" :alt="item.displayName" :class="{ unlockImg: item.category == 'Pistols' || item.category == null, unlockImgBig: item.category != 'Pistols' && item.category != null }">
-      <h3 class="description" v-if="item.inventoryCount != 0">First unlocked: <span>{{ formatDate(item.date) }}</span></h3>
-      <h3 class="description" v-else>You have not unlocked this item yet!</h3>
-      <h3 class="description" v-if="item.inventoryCount != 0">You have: <span>{{ item.inventoryCount }}</span></h3>
       <div class="buttonArray">
         <button class="finishedButton deleteButton" @click="inputItem" :class="{ disabledDelete: item.inventoryCount == 0 }">
           <img src="/select.svg" alt="Click to Select">
@@ -63,11 +60,10 @@ const deleteMenu = ref<boolean> (false);
 
 const emit = defineEmits(["close"]);
 
-const selectedItems = ref<WeaponSkin[]>([]);
-
 function inputItem() {
-  selectedItems.value.push(props.item);
-  emit("Select Item");
+  clientStore().selectedItems.push(props.item);
+  console.log(clientStore().selectedItems)
+  emit("close");
 }  
 
 function closeCard (): void {
