@@ -191,6 +191,8 @@ async function sortInventory (sortBy: "rarity" | "weapon" | "date"): Promise<voi
     clientStore().currentInventory = inventory.value;
 }
 
+console.log(clientStore().selectedInventory);
+
 async function getInventory (): Promise<void> {
     const skins = await getSkins();
     const inventoryUser = await getData();

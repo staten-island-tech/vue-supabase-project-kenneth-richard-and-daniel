@@ -74,7 +74,7 @@ async function deleteItem (item: WeaponSkin): Promise<void> {
   try {
     const { error } = await supabase.from("trades").insert({
       owner_id: sessionStore().session.id,
-      items_give: selectedItems.value.map((somethingelse) => somethingelse.displayName),
+      items_give: clientStore().selectedInventory.value.map((somethingelse) => somethingelse.displayName),
       items_want: [],
       date: "",
     })
