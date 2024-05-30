@@ -7,6 +7,31 @@
       <div class="createBackground" v-if="clicked">
         <label for="bombaclad2" id="bombaclad">Select Weapon You're Trading</label>
         <button id="bombaclad2" @click="clicked2 = true">+</button>
+        <div
+                  v-for="item in inventory"
+                  class="inventoryItem"
+                  :class="{
+                    common: item.rarity == 'Common',
+                    rare: item.rarity == 'Rare',
+                    epic: item.rarity == 'Epic',
+                    legendary: item.rarity == 'Legendary',
+                    godly: item.rarity == 'Godly',
+                    lockedItem: item.inventoryCount == 0
+                  }"
+                  @click="sendItemToCard(item)"
+                >
+                  <h2 class="itemName">{{ item.displayName }}</h2>
+                  <img
+                    class="inventoryItemImg"
+                    :src="item.displayIcon"
+                    :alt="item.displayName"
+                    :class="{
+                      karambit: ['Karambit', 'Blade', 'Imperium', 'Quo'].includes(
+                        item.displayName.split(' ')[item.displayName.split(' ').length - 1]
+                      )
+                    }"
+                  >
+        </div>
         <Transition name="create">
           <div class="createBackground" v-if="clicked2">
             <div>
@@ -19,7 +44,7 @@
                   </div>
                 </Transition>
                 <div
-                  v-for="item in inventory"
+                  v-for="item in inventory2"
                   class="inventoryItem"
                   :class="{
                     common: item.rarity == 'Common',
@@ -59,7 +84,7 @@
           </div>
         </Transition>
         <div class="buttonArray">
-          <button id="publish" @click="create">Publish</button>
+          <button id="publish" @click="selectCard(currentItem)">Publish</button>
           <button id="exit" @click="clicked = false">Quit</button>
         </div>
       </div>
@@ -91,8 +116,6 @@ onMounted(() => {
   watchLogout(sessionStore().session)
 })
 
-
-
 const clicked = ref(false)
 const clicked2 = ref(false)
 const clicked3 = ref(false)
@@ -120,6 +143,8 @@ const currentItem = ref<WeaponSkin>({
 })
 let mutatedInventory: Inventory = []
 
+
+
 function create() {
   if (!filled.value && !filled2.value) {
     return
@@ -141,6 +166,7 @@ onMounted(async () => {
     watchLogout(sessionStore().session);
     loaded.value = false;
     inventory.value = clientStore().currentInventory;
+    inventory2.value = clientStore().selectedInventory;
     sortOption.value = clientStore().sort;
     sortReverse.value = clientStore().reversed;
     showLockedBool.value = clientStore().hidden;
@@ -191,7 +217,6 @@ async function sortInventory (sortBy: "rarity" | "weapon" | "date"): Promise<voi
     clientStore().currentInventory = inventory.value;
 }
 
-console.log(clientStore().selectedInventory);
 
 async function getInventory (): Promise<void> {
     const skins = await getSkins();
@@ -247,6 +272,10 @@ async function getData (): Promise<ApiData[]> {
     }
 
     return apiData;
+}
+
+function selectCard(item) {
+  clientStore().selectedInventory.push(item);
 }
 
 </script>

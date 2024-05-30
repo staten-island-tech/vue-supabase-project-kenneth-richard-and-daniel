@@ -7,7 +7,7 @@ export const clientStore = defineStore("client", () => {
   const currentPity = ref<number> (0);
   const currentWeapons = ref<NewWeapon[]>([]);
   const selectedItems = ref<Inventory> ([]);
-  const selectedInventory = ref<Object> ([JSON.parse(JSON.stringify(currentInventory)) as typeof currentInventory]);
+  const selectedInventory = ref<Inventory> ([]);
 
   function changePity (newPity: number): void {
     currentPity.value = newPity;
