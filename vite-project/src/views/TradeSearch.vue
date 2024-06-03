@@ -8,7 +8,7 @@
         <label for="bombaclad2" id="bombaclad">Select Weapon You're Trading</label>
         <button id="bombaclad2" @click="clicked2 = true">+</button>
         <div
-                  v-for="item in inventory"
+                  v-for="item in inventory2"
                   class="inventoryItem"
                   :class="{
                     common: item.rarity == 'Common',
@@ -44,7 +44,7 @@
                   </div>
                 </Transition>
                 <div
-                  v-for="item in inventory2"
+                  v-for="item in inventory"
                   class="inventoryItem"
                   :class="{
                     common: item.rarity == 'Common',
@@ -121,6 +121,7 @@ const clicked2 = ref(false)
 const clicked3 = ref(false)
 const searchParam = ref<string>('')
 const inventory = ref<Inventory>([])
+const inventory2 = clientStore().selectedInventory
 const filled = ref('')
 const filled2 = ref('')
 const showItemCard = ref<Boolean>(false)
@@ -166,7 +167,7 @@ onMounted(async () => {
     watchLogout(sessionStore().session);
     loaded.value = false;
     inventory.value = clientStore().currentInventory;
-    inventory2.value = clientStore().selectedInventory;
+/*     inventory2 = clientStore().selectedInventory; */
     sortOption.value = clientStore().sort;
     sortReverse.value = clientStore().reversed;
     showLockedBool.value = clientStore().hidden;
@@ -274,8 +275,9 @@ async function getData (): Promise<ApiData[]> {
     return apiData;
 }
 
-function selectCard(item) {
+function selectCard(item: WeaponSkin) {
   clientStore().selectedInventory.push(item);
+  console.log(clientStore().selectedInventory);
 }
 
 </script>
