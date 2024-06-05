@@ -1,5 +1,5 @@
 <template>
-    <Transition name="delete">
+<Transition name="delete">
     <div class="deleteBackground" v-if="deleteMenu">
       <div class="deleteMenu">
         <h2>Are you sure you want to delete this item?</h2>
@@ -21,7 +21,7 @@
       </div>
     </div>
   </Transition>
-  
+
   <div class="itemCardMenu" :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare',
   epic: item.rarity == 'Epic', legendary: item.rarity == 'Legendary', godly: item.rarity == 'Godly' }">
       <h1 class="title">{{ item.displayName }}</h1>
@@ -83,7 +83,6 @@ async function deleteItem (item: WeaponSkin): Promise<void> {
     }
   }
 }
-
 </script>
 
 <style scoped>

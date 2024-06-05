@@ -84,7 +84,7 @@
           </div>
         </Transition>
         <div class="buttonArray">
-          <button id="publish" @click="selectCard(currentItem)">Publish</button>
+          <button id="publish" @click="create()">Publish</button>
           <button id="exit" @click="clicked = false">Quit</button>
         </div>
       </div>
@@ -182,10 +182,10 @@ function searchInventory (event: Event): void {
 }
 
 
-function sendItemToCard (item: WeaponSkin): void {
+/*function sendItemToCard (item: WeaponSkin): void {
   currentItem.value = item;
   showItemCard.value = true;
-}
+}*/
 
 async function sortInventory (sortBy: "rarity" | "weapon" | "date"): Promise<void> {
     clientStore().sort = sortBy;
