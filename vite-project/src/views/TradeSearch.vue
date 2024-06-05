@@ -182,10 +182,10 @@ function searchInventory (event: Event): void {
 }
 
 
-/*function sendItemToCard (item: WeaponSkin): void {
+function sendItemToCard (item: WeaponSkin): void {
   currentItem.value = item;
   showItemCard.value = true;
-}*/
+}
 
 async function sortInventory (sortBy: "rarity" | "weapon" | "date"): Promise<void> {
     clientStore().sort = sortBy;

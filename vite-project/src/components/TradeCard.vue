@@ -1,5 +1,5 @@
 <template>
-<!--   <div class="itemCardMenu" :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare',
+<div class="itemCardMenu" :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare',
   epic: item.rarity == 'Epic', legendary: item.rarity == 'Legendary', godly: item.rarity == 'Godly' }">
       <h1 class="title">{{ item.displayName }}</h1>
       <h3 class="title">{{ item.rarity }} {{ item.defaultName }}</h3>
@@ -14,9 +14,9 @@
           <h3>Close</h3>
         </button>
       </div>
-  </div> -->
+  </div> 
 
-  <div class="itemCardMenu" :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare',
+ <!--  <div class="itemCardMenu" :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare',
   epic: item.rarity == 'Epic', legendary: item.rarity == 'Legendary', godly: item.rarity == 'Godly' }">
       <h1 class="title">{{ item.displayName }}</h1>
       <h3 class="title">{{ item.rarity }} {{ item.defaultName }}</h3>
@@ -25,7 +25,7 @@
       <h3 class="description" v-else>You have not unlocked this item yet!</h3>
       <h3 class="description" v-if="item.inventoryCount != 0">You have: <span>{{ item.inventoryCount }}</span></h3>
       <div class="buttonArray">
-        <button class="finishedButton deleteButton" @click="openDeleteMenu" :class="{ disabledDelete: item.inventoryCount == 0 }">
+        <button class="finishedButton deleteButton" @click="inputItem()" :class="{ disabledDelete: item.inventoryCount == 0 }">
           <img src="/trash.svg" alt="Click to delete all of this item">
           <h3>Delete All</h3>
         </button>
@@ -34,7 +34,7 @@
           <h3>Close</h3>
         </button>
       </div>
-  </div>
+  </div> -->
 </template>
 
 <script setup lang="ts">
