@@ -19,10 +19,10 @@
           <img src="/backpack.svg" alt="Inventory">
           <h3>Inventory</h3>
         </RouterLink>
-        <RouterLink to="/trade-search" class="navButton searcher" :class="{ enabled: route.path == '/trade-search', disabled: email == '' }">
+        <!--<RouterLink to="/trade-search" class="navButton searcher" :class="{ enabled: route.path == '/trade-search', disabled: email == '' }">
           <img src="/magnify.svg" alt="Searcher">
           <h3>Trade</h3>
-        </RouterLink>
+        </RouterLink>-->
       </nav>
     </div>
   </header>
@@ -283,7 +283,7 @@ header {
   align-items: center;
   justify-content: center;
   gap: 5%;
-  width: 70em;
+  width: 55em;
   height: fit-content;
 }
 .navButton {
