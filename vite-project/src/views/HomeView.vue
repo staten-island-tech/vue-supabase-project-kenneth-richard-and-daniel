@@ -12,8 +12,9 @@ import { getSkins } from '@/stores/lootboxes';
 import { sessionStore } from '@/stores/session';
 import { clientStore } from '@/stores/client';
 import { watchLogout } from '@/assets/functions';
+import type { NewWeapon } from '@/assets/types';
 
-const weapons = ref<any> ();  
+const weapons = ref<NewWeapon[]> ();  
 
 watch(() => sessionStore().session, (newSession) => watchLogout(newSession));
 

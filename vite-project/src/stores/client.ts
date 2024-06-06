@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import type { NewWeapon, Inventory } from "@/assets/types";
+import type { NewWeapon, Inventory, Trade } from "@/assets/types";
 
 export const clientStore = defineStore("client", () => {
   const currentInventory = ref<Inventory> ([]);
@@ -27,7 +27,9 @@ export const clientStore = defineStore("client", () => {
   }
 
   const intendedRoute = ref<string> ("");
+  const currentTrades = ref<Trade[]> ([]);
 
-  return { currentInventory, currentPity, currentWeapons, changePity, changeInventory, fastSpin, sort, reversed, hidden, changeHidden, intendedRoute, selectedItems, selectedInventory }
+  return { currentInventory, currentPity, currentWeapons, changePity, changeInventory, fastSpin, sort, reversed, hidden, changeHidden,
+    intendedRoute, selectedItems, selectedInventory, currentTrades }
   
 });

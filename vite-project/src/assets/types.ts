@@ -103,3 +103,11 @@ export type SessionData = {
 }
 
 export type Inventory = WeaponSkin[];
+
+export type Trade = {
+    trade_id: number;
+    owner_id: number;
+    items_give: string[];
+    items_want: string[];
+    date: string;
+}
