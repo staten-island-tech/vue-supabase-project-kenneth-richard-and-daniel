@@ -1,34 +1,11 @@
 <template>
- <Transition name="delete">
-    <div class="deleteBackground" v-if="deleteMenu">
-      <div class="deleteMenu">
-        <h2>Are you sure you want to delete this item?</h2>
-        <h3><span style="color: var(--gold)">ALL</span> copies of the 
-          <span :class="{ commonText: item.rarity == 'Common', rareText: item.rarity == 'Rare', epicText: item.rarity == 'Epic',
-          legendaryText: item.rarity == 'Legendary', godlyText: item.rarity == 'Godly' }">
-            {{ item.displayName }}
-          </span> 
-          will be removed.</h3> 
-        <h3><strong style="color: #ff5050; font-size: 1.25em;">This action is unrecoverable!</strong></h3>
-        <div class="deleteButtons">
-          <button class="yes" @click="deleteItem(item)">
-            <img src="/trash.svg" alt="Click to confirm sign out">
-          </button>
-          <button class="no" @click="deleteMenu = false">
-            <img src="/cancel.svg" alt="Click to return to game">
-          </button>
-        </div>
-      </div>
-    </div>
-  </Transition> 
-  
-  <div class="itemCardMenu" :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare',
+<div class="itemCardMenu" :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare',
   epic: item.rarity == 'Epic', legendary: item.rarity == 'Legendary', godly: item.rarity == 'Godly' }">
       <h1 class="title">{{ item.displayName }}</h1>
       <h3 class="title">{{ item.rarity }} {{ item.defaultName }}</h3>
       <img :src="item.displayIcon" :alt="item.displayName" :class="{ unlockImg: item.category == 'Pistols' || item.category == null, unlockImgBig: item.category != 'Pistols' && item.category != null }">
       <div class="buttonArray">
-        <button class="finishedButton deleteButton" @click="inputItem" :class="{ disabledDelete: item.inventoryCount == 0 }">
+        <button class="finishedButton deleteButton" @click="selectCard(currentItem)" :class="{ disabledDelete: item.inventoryCount == 0 }">
           <img src="/select.svg" alt="Click to Select">
           <h3>Select Item</h3>
         </button>
@@ -37,19 +14,54 @@
           <h3>Close</h3>
         </button>
       </div>
-  </div>
+  </div> 
+
+ <!--  <div class="itemCardMenu" :class="{ common: item.rarity == 'Common', rare: item.rarity == 'Rare',
+  epic: item.rarity == 'Epic', legendary: item.rarity == 'Legendary', godly: item.rarity == 'Godly' }">
+      <h1 class="title">{{ item.displayName }}</h1>
+      <h3 class="title">{{ item.rarity }} {{ item.defaultName }}</h3>
+      <img :src="item.displayIcon" :alt="item.displayName" :class="{ unlockImg: item.category == 'Pistols' || item.category == null, unlockImgBig: item.category != 'Pistols' && item.category != null }">
+      <h3 class="description" v-if="item.inventoryCount != 0">First unlocked: <span>{{ formatDate(item.date) }}</span></h3>
+      <h3 class="description" v-else>You have not unlocked this item yet!</h3>
+      <h3 class="description" v-if="item.inventoryCount != 0">You have: <span>{{ item.inventoryCount }}</span></h3>
+      <div class="buttonArray">
+        <button class="finishedButton deleteButton" @click="inputItem()" :class="{ disabledDelete: item.inventoryCount == 0 }">
+          <img src="/trash.svg" alt="Click to delete all of this item">
+          <h3>Delete All</h3>
+        </button>
+        <button class="finishedButton closeButton" @click="closeCard">
+          <img src="/cancel.svg" alt="Click to close this card">
+          <h3>Close</h3>
+        </button>
+      </div>
+  </div> -->
 </template>
 
 <script setup lang="ts">
 
 import { formatDate } from '@/assets/functions';
-import type { WeaponSkin } from '@/assets/types';
+import { onMounted, ref, watch } from 'vue';
 import { supabase } from '@/lib/supabaseClient';
-import { clientStore } from '@/stores/client';
 import { sessionStore } from '@/stores/session';
-import { ref } from 'vue';
+import { getSkins } from '@/stores/lootboxes';
+import type { Inventory, NewWeapon, WeaponSkin } from '@/assets/types';
+import { clientStore } from '@/stores/client';
+import TradeCard from '@/components/TradeCard.vue';
+import { watchLogout } from '@/assets/functions';
 
+const currentItem = ref<WeaponSkin>({
+  defaultName: '',
+  category: '',
+  displayIcon: '',
+  displayName: '',
+  levelsCount: 0,
+  wallpaper: '',
+  rarity: '',
+  inventoryCount: 0,
+  date: ''
+})
 
+const inventory2 = clientStore().selectedInventory
 
 type Props = {
     item: WeaponSkin;
@@ -70,25 +82,11 @@ function closeCard (): void {
   emit("close");
 }
 
-async function deleteItem (item: WeaponSkin): Promise<void> {
-  try {
-    const { error } = await supabase.from("trades").insert({
-      owner_id: sessionStore().session.id,
-      items_give: clientStore().selectedInventory.value.map((somethingelse) => somethingelse.displayName),
-      items_want: [],
-      date: "",
-    })
-    if (error) throw error;
-
-    clientStore().changeInventory(clientStore().currentInventory.filter((inventoryItem) => inventoryItem != item));
-    emit("close");
-
-  } catch (error) {
-    if (error instanceof Error) {
-      alert(error.message);
-    }
-  }
+function selectCard(item: WeaponSkin) {
+  clientStore().selectedInventory.push(item);
+  console.log(clientStore().selectedInventory);
 }
+
 
 </script>
 
